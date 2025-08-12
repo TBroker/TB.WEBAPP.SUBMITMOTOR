@@ -1,0 +1,77 @@
+﻿@{
+    ViewBag.Title = "เอกสารสัญญา";
+    Layout = null; // ปรับตาม layout ที่คุณใช้
+}
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - T Broker</title>
+
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Prompt" asp-append-version="true">
+    <link rel="icon" type="image/png" href="~/image/icon/tbroker.ico" sizes="32x32" asp-append-version="true">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/TB.WEBAPP.SUBMITMOTOR.styles.css" asp-append-version="true" />
+
+</head>
+<body>
+    <content>
+        <div class="container mt-4">
+            <!-- PDF Viewer -->
+            <div class="mb-3">
+                <iframe id="pdfViewer" width="100%" height="800px" style="border: none;" title="PDF Document"></iframe>
+            </div>           
+
+            <form id="confirmConsent" method="POST" asp-controller="" asp-action="" autocomplete="off">
+                @Html.AntiForgeryToken()
+                <!-- Consent Checkbox -->
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" value="" id="consentCheckbox">
+                    <label class="form-check-label" for="consentCheckbox">
+                        ข้าพเจ้าได้อ่านและยินยอมตามเงื่อนไขในเอกสารนี้
+                    </label>
+                </div>
+
+                <!-- Input แนบเอกสาร -->
+                <div class="col-lg-6 col-12 mb-3">
+                    <label for="documentFileInput" class="form-label">เอกสารสำเนาบัตรประชาชน</label> <i class="fa-solid fa-star-of-life fa-2xs text-danger"></i>
+                    <input class="form-control form-control-sm" type="file" id="documentFileInput" accept=".jpeg,.jpg,.png,.pdf">
+                    <label for="" class="form-label text-danger fs-6">แนบเอกสาร (jpeg, jpg, png, pdf ขนาดไม่เกิน 10MB)</label>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="button" class="btn btn-primary btn-sm" id="submitConsent" disabled>
+                    ยืนยันการยินยอม
+                </button>
+            </form>
+        </div>
+    </content>
+
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="module" src="@Url.Content("~/js/helper/utility.js")" asp-append-version="true"></script>
+    <script type="module" src="@Url.Content("~/js/viewpdf/contact/index.js")" asp-append-version="true"></script>
+
+    <script>
+        try {
+                // รับข้อมูล PDF จาก ViewBag โดยไม่ให้ Razor encode
+                const base64 = '@Html.Raw(ViewBag.PdfData)';
+
+                // แปลง Base64 เป็น Blob
+                const byteCharacters = atob(base64);
+                const byteNumbers = Array.from(byteCharacters, c => c.charCodeAt(0));
+                const byteArray = new Uint8Array(byteNumbers);
+                const blob = new Blob([byteArray], { type: 'application/pdf' });
+
+                // สร้าง URL สำหรับ PDF
+                const pdfUrl = URL.createObjectURL(blob);
+                
+                // โหลด PDF.js viewer พร้อมไฟล์ PDF
+                const viewerUrl = `/lib/pdfjs-5.2.133-dist/web/viewer.html?file=${encodeURIComponent(pdfUrl)}`;
+                document.getElementById('pdfViewer').src = viewerUrl;
+            } catch (error) {
+                console.error('Error decoding PDF:', error);
+                alert('ไม่สามารถแสดงไฟล์ PDF ได้');
+            }
+    </script>
+</body>

@@ -1,0 +1,1006 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "แจ้งงานรถยนต์ (ปีต่ออายุ)";
+}
+
+@section Styles {
+    <!-- DataTables + Bootstrap 5 -->
+    <link href="https://cdn.datatables.net/2.3.2/css/dataTables.bootstrap5.min.css" rel="stylesheet" />
+    <!-- RowReorder -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/rowreorder/1.5.0/css/rowReorder.bootstrap5.min.css" />
+    <!-- Responsive -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/3.0.4/css/responsive.bootstrap5.min.css" />
+    <!-- RowGroup -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/rowgroup/1.5.1/css/rowGroup.bootstrap5.min.css">
+    <!-- FixedHeader -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/fixedheader/4.0.2/css/fixedHeader.bootstrap5.min.css">
+
+    <link href="~/css/submitmotor/submitmotor-new.css" rel="stylesheet" asp-append-version="true" />
+}
+
+<header>
+    <div class="row row-cols-md-1 my-3 justify-content-center align-items-center">
+        <div class="offset-xxl-1 col-xxl-2 col-lg-3 col-md-4 col-5 mb-lg-0 mb-3">
+            <div class="justify-content-center align-items-center">
+                <img src="~/image/logo-company/tbroker_header.png" class="rounded img-fluid" alt="T Broker Header" asp-append-version="true" />
+            </div>
+        </div>
+        <div class="col-xxl-6 col-lg-6 mb-lg-0 mb-3">
+            <div class="text-center">
+                <h1><span class="badge text-bg-secondary">@ViewData["Title"]</span></h1>
+            </div>
+        </div>
+        <div class="col-xxl-3 col-lg-3">
+            <div class="row justify-content-center align-items-center">
+                <label for="agentCodeInput" class="col-lg-3 col col-3 col-form-label col-form-label-sm fw-bold">รหัสผู้ขาย</label>
+                <div class="col-lg-9 col-9">
+                    <input type="text" readonly class="form-control-plaintext" id="agentCodeInput" placeholder="รหัสผู้ขาย">
+                </div>
+            </div>
+            <div class="row justify-content-center align-items-center">
+                <label for="agentNameInput" class="col-lg-3 col-3 col-form-label col-form-label-sm fw-bold">ผู้ขาย</label>
+                <div class="col-lg-9 col-9">
+                    <input type="text" readonly class="form-control-plaintext" id="agentNameInput" placeholder="ผู้ขาย">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <div class="col-12">
+            <div class="card card-body">
+                <div class="row">
+                    <div class="col-auto">
+                        <div class="row">
+                            <label for="policyTypeInput" class="col-lg-auto col-form-label fw-bold">ประเภทกรมธรรม์</label>
+                            <div class="col-lg-auto">
+                                <input type="text" readonly class="form-control-plaintext" id="policyTypeInput" name="policyTypeInput" placeholder="ประเภทกรมธรรม์" value="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="row">
+                            <label for="productNameInput" class="col-lg-auto col-form-label fw-bold">ผลิตภัณฑ์</label>
+                            <div class="col-lg-auto">
+                                <input type="text" readonly class="form-control-plaintext" id="productNameInput" name="productNameInput" placeholder="ผลิตภัณฑ์" value="">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-auto">
+                        <div class="row">
+                            <label for="oldPolicyVoluntaryInput" class="col-lg-auto col-form-label fw-bold">เลขกรมธรรม์เดิม (สมัครใจ)</label>
+                            <div class="col-lg-auto">
+                                <input type="text" readonly class="form-control-plaintext" id="oldPolicyVoluntaryInput" name="oldPolicyVoluntaryInput" placeholder="สมัครใจ" value="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <div class="row">
+                            <label for="oldPolicyCompulsoryInput" class="col-lg-auto col-form-label fw-bold">พรบ.</label>
+                            <div class="col-lg-auto">
+                                <input type="text" readonly class="form-control-plaintext" id="oldPolicyCompulsoryInput" name="oldPolicyCompulsoryInput" placeholder="พรบ." value="">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<content>
+    <div class="row mb-3">
+        <div class="col-auto">
+            <button type="button" class="btn btn-outline-danger"
+                    data-bs-target="#orderMotorModal"
+                    data-bs-toggle="modal">
+                <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+                <span class="align-middle">ค้นหารายการต่ออายุ</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="orderMotorModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="modal-title fs-5" id="exampleModalLabel">
+                        <i class="fa-solid fa-table-list fa-xl"></i>
+                        รายการข้อมูลใบเสนอราคา
+                    </h2>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <i class="fa-solid fa-filter fa-lg"></i> ค้นหาข้อมูล
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-lg-6 col-12 mb-3">
+                                            <label for="" class="form-label">ทะเบียนรถ</label>
+                                            <input type="text" class="form-control form-control-sm" id="" autocomplete="off" placeholder="ทะเบียนรถ">
+                                        </div>
+                                        <div class="col-lg-6 col-12 mb-3">
+                                            <label for="" class="form-label">ชื่อ-นามสกุล</label>
+                                            <input type="text" class="form-control form-control-sm" id="" autocomplete="off" placeholder="ชื่อ-นามสกุล">
+                                        </div>
+                                        <div class="col-lg-6 col-12 mb-3">
+                                            <label for="" class="form-label">วันที่เริ่มทำรายการ</label>
+                                            <input type="text" class="form-control form-control-sm" id="" readonly placeholder="วันที่เริ่มทำรายการ">
+                                        </div>
+                                        <div class="col-lg-6 col-12 mb-3">
+                                            <label for="" class="form-label">วันที่สิ้นสุดทำรายการ</label>
+                                            <input type="text" class="form-control form-control-sm" id="" readonly placeholder="วันที่สิ้นสุดทำรายการ">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12 mb-3">
+                                            <div class="alert alert-warning" role="alert">
+                                                <div class="row">
+                                                    <div class="col-1 d-flex justify-content-center align-items-center  text-center">
+                                                        <i class="fa-solid fa-circle-exclamation fa-2xl text-danger"></i>
+                                                    </div>
+                                                    <div class="col-11">
+                                                        <div class="card">
+                                                            <div class="card-body">
+                                                                <span>ใบเสนอราคานี้มีผลบังคับใช้ 30 วัน นับตั้งแต่วันที่ออกใบเสนอราคา</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row justify-content-center">
+                                        <div class="col-auto mb-3">
+                                            <button class="btn btn-secondary" title="ค้นหา" id=""><i class="fa-solid fa-magnifying-glass fa-lg"></i> ค้นหา</button>
+                                            <button class="btn btn-danger" title="เคลียร์" id=""><i class="fa-solid fa-rotate fa-lg"></i> เคลียร์</button>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="table-responsive">
+                                                <table id="orderMotorTable" class="table display cell-border compact stripe w-100">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>ยี่ห้อ</th>
+                                                            <th>รุ่น</th>
+                                                            <th>ผลิตภัณฑ์</th>
+                                                            <th>เบี้ยรวม</th>
+                                                            <th>วันทำรายการ</th>
+                                                            <th>วันทำรายการ</th>
+                                                            <th>แจ้งงาน</th>
+                                                        </tr>
+                                                    </thead>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <form id="formNewMotorSubmit" method="post" autocomplete="off">
+        @Html.AntiForgeryToken()
+        <div class="row mb-3">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-auto">
+                                <i class="fa-solid fa-user fa-xl"></i>
+                                <span class="me-2">ข้อมูลผู้เอาประกัน</span>
+                            </div>
+                            <div class="col-auto">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="customerTypeRadio" id="personRadio" value="N" checked>
+                                    <label class="form-check-label" for="personRadio">บุคคล</label>
+                                </div>
+                            </div>
+                            <div class="col-auto">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="customerTypeRadio" id="corporationRadio" value="Y">
+                                    <label class="form-check-label" for="corporationRadio">นิติบุคคล</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-lg-2 col-6 mb-3">
+                                <label for="prefixTitle" class="form-label">คำนำหน้า</label>
+                                <i class="fa-solid fa-star-of-life fa-2xs text-danger"></i>
+                                <select class="form-select form-select-sm" id="prefixTitle" name="prefixTitle">
+                                    <option selected value="">กรุณาเลือก</option>
+                                </select>
+                            </div>
+                            <div class="col-lg-6 col-12 mb-3">
+                                <div class="row">
+                                    <div class="col-md-6 mb-2 mb-md-0" id="firstNameSection">
+                                        <label for="firstNameInput" class="form-label">ชื่อ</label>
+                                        <i class="fa-solid fa-star-of-life fa-2xs text-danger"></i>
+                                        <input type="text" class="form-control form-control-sm" id="firstNameInput" name="firstNameInput" placeholder="ชื่อ">
+                                    </div>
+                                    <div class="col-md-6" id="lastNameSection">
+                                        <label for="lastNameInput" class="form-label">นามสกุล</label>
+                                        <i class="fa-solid fa-star-of-life fa-2xs text-danger"></i>
+                                        <input type="text" class="form-control form-control-sm" id="lastNameInput" name="lastNameInput" placeholder="นามสกุล">
+                                    </div>
+                                    <div class="col-md-12 mb-2 mb-md-0" id="corporationSection" hidden>
+                                        <label for="corporationNameInput" class="form-label">ชื่อนิติบุคคล</label>
+                                        <i class="fa-solid fa-star-of-life fa-2xs text-danger"></i>
+                                        <input type="text" class="form-control form-control-sm" id="corporationNameInput" name="corporationNameInput" placeholder="ชื่อนิติบุคคล">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-4 col-12 mb-3">
+                                <label for="citizenIdInput" class="form-label" id="customerIdLabel">เลขบัตรประชาชน</label>
+                                <span class="messageErrorCardIDSpan"></span>
+                                <i class="fa-solid fa-star-of-life fa-2xs text-danger"></i>
+                                <input type="text" class="form-control form-control-sm" maxlength="13" id="citizenIdInput" name="citizenIdInput" placeholder="บัตรประชาชน">
+                                <div id="customerTypeSection">
+                                    <div class="form-check form-check-inline col-form-label-sm">
+                                        <input class="form-check-input" type="radio" name="customerIdRadio" id="citizenIdRadio" value="01" checked>
+                                        <label class="form-check-label" for="citizenIdRadio">บัตรประชาชน</label>
+                                    </div>
+                                    <div class="form-check form-check-inline col-form-label-sm">
+                                        <input class="form-check-input" type="radio" name="customerIdRadio" id="passportIdRadio" value="03">
+                                        <label class="form-check-label" for="passportIdRadio">หนังสือเดินทาง (Passport)</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-md-6 col-12 mb-3" id="birthDateSection">
+                                <label for="" class="form-label">วัน/เดือน/ปี <span class="text-secondary">(เกิด)</span></label>
+                                <i class="fa-solid fa-star-of-life fa-2xs text-danger"></i>
+                                <div class="input-group input-group-sm">
+                                    <input type="text" class="form-control form-control-sm" id="birthDateInput" name="birthDateInput" readonly placeholder="วัน/เดือน/ปี (เกิด)">
+                                    <span class="input-group-text" id="ageSpan">0</span>
+                                    <span class="input-group-text">ปี</span>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-md-6 col-12 mb-3" id="registerDateSection" hidden>
+                                <label for="" class="form-label">วัน/เดือน/ปี <span class="text-secondary">(จดทะเบียน)</span></label>
+                                <i class="fa-solid fa-star-of-life fa-2xs text-danger"></i>
+                                <div class="input-group input-group-sm">
+                                    <input type="text" class="form-control form-control-sm" id="registerDateInput" name="registerDateInput" readonly placeholder="วัน/เดือน/ปี (จดทะเบียน)">
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-md-6 col-12 mb-3">
+                                <label for="" class="form-label">โทรศัพท์มือถือ</label>
+                                <i class="fa-solid fa-star-of-life fa-2xs text-danger"></i>
+                                <input type="text" class="form-control form-control-sm numberonly" maxlength="10" id="" name="" placeholder="โทรศัพท์มือถือ">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="alert alert-danger align-content-center" role="alert">
+                                    <div class="row">
+                                        <div class="col-1 d-flex justify-content-center align-items-center  text-center">
+                                            <i class="fa-solid fa-circle-exclamation fa-2xl text-danger"></i>
+                                        </div>
+                                        <div class="col-11">
+                                            <div class="card">
+                                                <div class="card-body">
+                                                    <span>ท่านสามารถตรวจสอบเอกสารยืนยันการรับแจ้งประกัน</span>
+                                                    <i class="fa-solid fa-file-pdf fa-xl"></i>
+                                                    <span>โดยใช้รหัสผ่านเป็น 4 หลักท้ายของ</span>
+                                                    <span id="usePasswordBySpan">เลขบัตรประชาชน</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <i class="fa-solid fa-address-card fa-xl"></i>
+                        <span class="me-2">ข้อมูลที่อยู่ผู้เอาประกันภัย</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-lg-4 col-12 mb-3">
+                                <label for="customerAddressNoInput" class="form-label">เลขที่</label>
+                                <i class="fa-solid fa-star-of-life fa-2xs text-danger"></i>
+                                <input type="text" class="form-control form-control-sm" maxlength="50" id="customerAddressNoInput" name="customerAddressNoInput" placeholder="เลขที่">
+                                <label class="text-danger col-form-label-sm" for="" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="59/5 อาคารพาราไดซ์ ถ.ศรีนครินทร์">ตัวอย่าง <i class="fa-solid fa-circle-info"></i></label>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-12 mb-3">
+                                <label for="customerAddressProvinceSelect" class="form-label">จังหวัด</label>
+                                <i class="fa-solid fa-star-of-life fa-2xs text-danger"></i>
+                                <select class="form-select form-select-sm" id="customerAddressProvinceSelect" name="customerAddressProvinceSelect">
+                                    <option selected value="">กรุณาเลือก</option>
+                                </select>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-12 mb-3">
+                                <label for="customerAddressDistrictSelect" class="form-label">อำเภอ/เขต</label>
+                                <i class="fa-solid fa-star-of-life fa-2xs text-danger"></i>
+                                <select class="form-select form-select-sm" id="customerAddressDistrictSelect" name="customerAddressDistrictSelect">
+                                    <option selected value="">กรุณาเลือก</option>
+                                </select>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-12 mb-3">
+                                <label for="customerAddressSubDistrictSelect" class="form-label">ตำบล/แขวง</label>
+                                <i class="fa-solid fa-star-of-life fa-2xs text-danger"></i>
+                                <select class="form-select form-select-sm" id="customerAddressSubDistrictSelect" name="customerAddressSubDistrictSelect">
+                                    <option selected value="">กรุณาเลือก</option>
+                                </select>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-12 mb-3">
+                                <label for="customerAddressZipCodeInput" class="form-label">รหัสไปรษณีย์</label>
+                                <i class="fa-solid fa-star-of-life fa-2xs text-danger"></i>
+                                <input type="text" class="form-control form-control-sm numberonly" id="customerAddressZipCodeInput" name="customerAddressZipCodeInput" maxlength="5" placeholder="รหัสไปรษณีย์">
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-12 mb-3">
+                                <label for="customerOccupationSelect" class="form-label">อาชีพ</label>
+                                <i class="fa-solid fa-star-of-life fa-2xs text-danger"></i>
+                                <select class="form-select form-select-sm" id="customerOccupationSelect" name="customerOccupationSelect">
+                                    <option selected value="">กรุณาเลือก</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-md-auto col-12">
+                                <i class="fa-solid fa-envelope-open-text fa-xl"></i>
+                                <span class="me-2">ข้อมูลที่อยู่ในการจัดส่งเอกสาร</span>
+                            </div>
+                            <div class="col-md-auto col-12">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="sendByAddressRadio" id="sendForAgentRadio" value="A" checked>
+                                    <label class="form-check-label" for="sendForAgentRadio">
+                                        ตามที่อยู่ปัจจุบันนายหน้า
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-auto col-12">
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="sendByAddressRadio" id="sendForCustomerRadio" value="I">
+                                    <label class="form-check-label" for="sendForCustomerRadio">
+                                        ตามที่อยู่ผู้เอาประกันภัย
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-lg-auto col-12">
+                                <div class="form-check form-switch form-check-inline">
+                                    <input class="form-check-input" type="checkbox" value="" id="editAddressCheckbox">
+                                    <label class="form-check-label" for="editAddressCheckbox">
+                                        แก้ไขที่อยู่
+                                    </label>
+                                    <span class="form-text text-muted" id="editAddressBySpan">ตามที่อยู่ปัจจุบันนายหน้า</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-lg-4 col-12 mb-3">
+                                <label for="sendAddressNoInput" class="form-label">เลขที่</label>
+                                <i class="fa-solid fa-star-of-life fa-2xs text-danger"></i>
+                                <input type="text" class="form-control form-control-sm readonly" maxlength="50" id="sendAddressNoInput" name="sendAddressNoInput" placeholder="เลขที่" readonly>
+                                <label class="text-danger col-form-label-sm" for="" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="59/5 อาคารพาราไดซ์ ถ.ศรีนครินทร์">ตัวอย่าง <i class="fa-solid fa-circle-info"></i></label>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-12 mb-3">
+                                <label for="sendAddressProvinceSelect" class="form-label">จังหวัด</label>
+                                <i class="fa-solid fa-star-of-life fa-2xs text-danger"></i>
+                                <select class="form-select form-select-sm readonly" id="sendAddressProvinceSelect" name="sendAddressProvinceSelect">
+                                    <option selected value="">กรุณาเลือก</option>
+                                </select>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-12 mb-3">
+                                <label for="sendAddressDistrictSelect" class="form-label">อำเภอ/เขต</label>
+                                <i class="fa-solid fa-star-of-life fa-2xs text-danger"></i>
+                                <select class="form-select form-select-sm readonly" id="sendAddressDistrictSelect" name="sendAddressDistrictSelect">
+                                    <option selected value="">กรุณาเลือก</option>
+                                </select>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-12 mb-3">
+                                <label for="sendAddressSubDistrictSelect" class="form-label">ตำบล/แขวง</label>
+                                <i class="fa-solid fa-star-of-life fa-2xs text-danger"></i>
+                                <select class="form-select form-select-sm readonly" id="sendAddressSubDistrictSelect" name="sendAddressSubDistrictSelect">
+                                    <option selected value="">กรุณาเลือก</option>
+                                </select>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-12 mb-3">
+                                <label for="sendAddressZipCodeInput" class="form-label">รหัสไปรษณีย์</label>
+                                <i class="fa-solid fa-star-of-life fa-2xs text-danger"></i>
+                                <input type="text" class="form-control form-control-sm readonly" id="sendAddressZipCodeInput" name="sendAddressZipCodeInput" maxlength="5" placeholder="รหัสไปรษณีย์" readonly>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-auto">
+                                <i class="fa-solid fa-car fa-xl"></i>
+                                <span class="me-2">ข้อมูลรถยนต์</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-lg-4 col-md-6 col-12 mb-3">
+                                <label for="vehicleCodeSelect" class="form-label">รหัสรถ</label>
+                                <i class="fa-solid fa-star-of-life fa-2xs text-danger"></i>
+                                <select class="form-select form-select-sm" id="vehicleCodeSelect" name="vehicleCodeSelect">
+                                    <option selected value="">กรุณาเลือก</option>
+                                </select>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-12 mb-3">
+                                <label for="carBrandSelect" class="form-label">ยี่ห้อรถยนต์</label>
+                                <i class="fa-solid fa-star-of-life fa-2xs text-danger"></i>
+                                <select class="form-select form-select-sm form-select-disabled readonly" id="carBrandSelect" name="carBrandSelect">
+                                    <option selected value=""></option>
+                                </select>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-12 mb-3">
+                                <label for="carModelSelect" class="form-label">รุ่นรถยนต์</label>
+                                <i class="fa-solid fa-star-of-life fa-2xs text-danger"></i>
+                                <select class="form-select form-select-sm form-select-disabled readonly" id="carModelSelect" name="carModelSelect">
+                                    <option selected value=""></option>
+                                </select>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-12 mb-3">
+                                <label for="registrationCarInput" class="form-label">ทะเบียน</label>
+                                <i class="fa-solid fa-star-of-life fa-2xs text-danger"></i>
+                                <input type="text" class="form-control form-control-sm" id="registrationCarInput" placeholder="ทะเบียน">
+                                <label class="text-danger col-form-label-sm" for="" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-title="1กก 1234">ตัวอย่าง <i class="fa-solid fa-circle-info"></i></label>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-12 mb-3">
+                                <label for="registrationCarProvinceSelect" class="form-label">จังหวัดทะเบียน</label>
+                                <i class="fa-solid fa-star-of-life fa-2xs text-danger"></i>
+                                <select class="form-select form-select-sm" id="registrationCarProvinceSelect" name="registrationCarProvinceSelect">
+                                    <option selected value="">กรุณาเลือก</option>
+                                </select>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-12 mb-3">
+                                <label for="registrationCarYearInput" class="form-label">ปีจดทะเบียน</label>
+                                <i class="fa-solid fa-star-of-life fa-2xs text-danger"></i>
+                                <input type="text" class="form-control form-control-sm" id="registrationCarYearInput" name="registrationCarYearInput" placeholder="ปีจดทะเบียน" readonly>
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-12 mb-3">
+                                <label for="chassisNumberInput" class="form-label">เลขตัวถัง</label>
+                                <i class="fa-solid fa-star-of-life fa-2xs text-danger"></i>
+                                <input type="text" class="form-control form-control-sm touppercase" maxlength="20" id="chassisNumberInput" name="chassisNumberInput" placeholder="เลขตัวถัง">
+                            </div>
+                            <div class="col-lg-4 col-md-6 col-12 mb-3">
+                                <label for="machineNumberInput" class="form-label">เลขเครื่อง</label>
+                                <input type="text" class="form-control form-control-sm" maxlength="20" id="machineNumberInput" name="machineNumberInput" placeholder="เลขเครื่อง">
+                            </div>
+                            <div class="col-lg-2 col-md-6 col-12 mb-3">
+                                <label for="vehicleSizeInput" class="form-label">ขนาดรถ</label>
+                                <i class="fa-solid fa-star-of-life fa-2xs text-danger"></i>
+                                <div class="input-group input-group-sm">
+                                    <input type="text" class="form-control form-control-sm" maxlength="6" id="vehicleSizeInput" name="vehicleSizeInput" placeholder="ขนาดรถ" readonly>
+                                    <span class="input-group-text" id="basic-addon2">ซีซี</span>
+                                </div>
+                            </div>
+                            <div class="col-lg-2 col-md-6 col-12 mb-3">
+                                <label for="carColorSelect" class="form-label">สีรถ</label>
+                                <i class="fa-solid fa-star-of-life fa-2xs text-danger"></i>
+                                <select class="form-select form-select-sm" id="carColorSelect" name="carColorSelect">
+                                    <option selected value="">กรุณาเลือก</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-auto">
+                                <i class="fa-solid fa-car-burst fa-xl"></i>
+                                <span class="me-2">ข้อมูลความคุ้มครอง</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-lg-6 col-12 mb-3">
+                                <span>ผู้รับผลประโยชน์</span>
+                                <span class="text-secondary">(ต้องเป็นผู้ถือกรรมสิทธิ์ตามเล่มจดทะเบียนรถเท่านั้น)</span>
+                                <i class="fa-solid fa-star-of-life fa-2xs text-danger"></i>
+                                <div class="input-group input-group-sm">
+                                    <div class="col-sm-3 mb-sm-0 col-12 mb-3">
+                                        <select class="form-select form-select-sm" id="beneficiaryPrefixSelect" name="beneficiaryPrefixSelect">
+                                            <option selected>กรุณาเลือก</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-9 col-12">
+                                        <input type="text" class="form-control form-control-sm" placeholder="ผู้รับผลประโยชน์" name="beneficiaryNameInput" id="beneficiaryNameInput" maxlength="100">
+                                    </div>
+                                </div>
+                                <div class="form-check col-form-label-sm">
+                                    <input class="form-check-input" type="checkbox" id="byInsuredCheckBox">
+                                    <label class="form-check-label" for="byInsuredCheckBox">
+                                        ตามผู้เอาประกันภัย
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-lg-6 col-12 mb-3">
+                                <label class="form-label" for="">ประเภทการซ่อม</label>
+                                <div class="col-md-auto">
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input disabled-radio readonly" type="radio" name="carRepairTypeRadio" id="showRoomRepairRadio" value="S">
+                                        <label class="form-check-label readonly" for="showRoomRepairRadio">ซ่อมห้าง</label>
+                                    </div>
+                                    <div class="form-check form-check-inline">
+                                        <input class="form-check-input disabled-radio readonly" type="radio" name="carRepairTypeRadio" id="garageRepairRadio" value="G">
+                                        <label class="form-check-label readonly" for="garageRepairRadio">ซ่อมอู่</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-3 col-sm-6 col-12 mb-3">
+                                <label for="voluntaryStartDateInput" class="form-label">วันที่เริ่มคุ้มครอง (สมัครใจ)</label>
+                                <input type="text" class="form-control form-control-sm" id="voluntaryStartDateInput" name="voluntaryStartDateInput" readonly placeholder="วันที่เริ่มคุ้มครอง (สมัครใจ)">
+                            </div>
+                            <div class="col-lg-3 col-sm-6 col-12 mb-3">
+                                <label class="form-label" for="voluntaryExpireDateInput">วันที่สิ้นสุดคุ้มครอง (สมัครใจ)</label>
+                                <input type="text" class="form-control form-control-sm readonly" id="voluntaryExpireDateInput" name="voluntaryExpireDateInput" readonly placeholder="วันที่สิ้นสุดคุ้มครอง (สมัครใจ)">
+                            </div>
+
+                            <div class="col-lg-3 col-sm-6 col-12 mb-3">
+                                <label class="form-label readonly" for="compulsoryStartDateInput">วันที่เริ่มคุ้มครอง (พรบ.)</label>
+                                <input type="text" class="form-control form-control-sm readonly" id="compulsoryStartDateInput" readonly name="compulsoryStartDateInput" placeholder="วันที่เริ่มคุ้มครอง (พรบ.)">
+                                <div class="form-check form-check-inline col-form-label-sm">
+                                    <input class="form-check-input disabled-radio readonly" type="radio" name="isCompulsoryRadio" id="nonCompulsoryRadio" value="N" checked>
+                                    <label class="form-check-label readonly" for="nonCompulsoryRadio">ไม่มี พรบ.</label>
+                                </div>
+                                <div class="form-check form-check-inline col-form-label-sm">
+                                    <input class="form-check-input disabled-radio readonly" type="radio" name="isCompulsoryRadio" id="compulsoryRadio" value="Y">
+                                    <label class="form-check-label readonly" for="compulsoryRadio">มี พรบ.</label>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-6 col-12 mb-3">
+                                <label class="form-label readonly" for="compulsoryExpireDateInput">วันที่สิ้นสุดคุ้มครอง (พ.ร.บ.)</label>
+                                <input type="text" class="form-control form-control-sm readonly" readonly id="compulsoryExpireDateInput" name="compulsoryExpireDateInput" placeholder="วันที่สิ้นสุดคุ้มครอง (พ.ร.บ.)">
+                            </div>
+                        </div>
+
+                        <div class="row d-flex justify-content-center align-items-center">
+                            <div class="col-lg-3 col-sm-4 col-12 mb-3">
+                                <div class="card shadow">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-12 mb-3 d-flex justify-content-center align-items-center">
+                                                <img class="img-fluid w-25" alt="" src="~/image/insurance/car_suminsure.png" asp-append-version="true">
+                                            </div>
+                                            <div class="col-12 text-center">
+                                                <label class="form-label" for="sumInsuranceInput">ทุนประกันภัย</label>
+                                                <input type="text" class="form-control form-control-sm text-end" id="sumInsuranceInput" name="sumInsuranceInput" readonly placeholder="ทุนประกันภัย">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-4 col-12 mb-3">
+                                <div class="card shadow">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-12 mb-3 d-flex justify-content-center align-items-center">
+                                                <img class="img-fluid w-25" alt="" src="~/image/insurance/car_deduct.png" asp-append-version="true">
+                                            </div>
+                                            <div class="col-12 text-center">
+                                                <label class="form-label" for="deductInput">ค่าเสียหายส่วนแรก</label>
+                                                <input type="text" class="form-control form-control-sm text-end" id="deductInput" name="deductInput" readonly placeholder="ค่าเสียหายส่วนแรก">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-3 col-sm-4 col-12 mb-3">
+                                <div class="card shadow">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-12 mb-3 d-flex justify-content-center align-items-center">
+                                                <img class="img-fluid w-25" alt="" src="~/image/insurance/car_lost.png" asp-append-version="true">
+                                            </div>
+                                            <div class="col-12 text-center">
+                                                <label class="form-label" for="lostInput">สูญหาย</label>
+                                                <input type="text" class="form-control form-control-sm text-end" id="lostInput" name="lostInput" readonly placeholder="สูญหาย">
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-auto">
+                                <i class="fa-solid fa-receipt fa-xl"></i>
+                                <span class="me-2">ข้อมูลเบี้ย</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-lg-3 col-sm-6 col-12 mb-3 text-end">
+                                <label class="form-label" for="NetPremiumInput">เบี้ยสุทธิ (บาท)</label>
+                                <input type="text" class="form-control form-control-sm text-end" readonly id="NetPremiumInput" name="NetPremiumInput" placeholder="เบี้ยสุทธิ">
+                            </div>
+                            <div class="col-lg-3 col-sm-6 col-12 mb-3 text-end">
+                                <label class="form-label" for="TotalPremiumInput">เบี้ยรวม (บาท)</label>
+                                <input type="text" class="form-control form-control-sm text-end" readonly id="TotalPremiumInput" name="TotalPremiumInput" placeholder="เบี้ยรวม">
+                            </div>
+                            <div class="col-lg-3 col-sm-6 col-12 mb-3 text-end">
+                                <label class="form-label text-end" for="TotalCompulsoryInput">พ.ร.บ. (บาท)</label>
+                                <input type="text" class="form-control form-control-sm text-end" readonly id="TotalCompulsoryInput" name="TotalCompulsoryInput" placeholder="พรบ.">
+                            </div>
+                            <div class="col-lg-3 col-sm-6 col-12 mb-3 text-end">
+                                <label class="form-label text-end" for="SummaryInput">เบี้ยรวม พ.ร.บ. (บาท)</label>
+                                <input type="text" class="form-control form-control-sm text-end" readonly id="SummaryInput" name="SummaryInput" placeholder="เบี้ยรวม พรบ.">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-lg-4 col-sm-6 col-12 mb-3" id="inspectionAgentSection">
+                <select id="inspectionAgentSelect" name="inspectionAgentSelect" class="form-select form-select-sm">
+                    <option value="A" selected>กรุณาเลือกผลตรวจ</option>
+                    <option value="Y">ผลตรวจพบบาดแผล</option>
+                    <option value="N">ผลตรวจไม่พบบาดแผล</option>
+                </select>
+            </div>
+            <div class="col-lg-4 col-sm-6 col-12 mb-3" id="inspectionCarWoundsSection">
+                <div class="input-group input-group-sm">
+                    <span class="input-group-text bg-light">จำนวน</span>
+                    <input type="text" class="form-control text-center readonly numberonly" id="inspectionCarWoundsInput">
+                    <span class="input-group-text bg-light">แผล</span>
+                </div>
+            </div>
+            <div class="col-12">
+                <div class="row">
+                    <div class="col-lg-4 col-sm-6 col-12 mb-3" id="inspectionMobileSection" hidden>
+                        <label for="inspectionMobileInput" class="form-label">เบอร์ติดต่อ</label>
+                        <span class="text-danger">(สำหรับติดต่อตรวจสภาพรถ)</span>
+                        <i class="fa-solid fa-star-of-life fa-2xs text-danger"></i>
+                        <input type="text" class="form-control form-control-sm" maxlength="10" id="inspectionMobileInput" name="inspectionMobileInput" autocomplete="off" placeholder="เบอร์ติดต่อ">
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 mb-3">
+                <div class="form-floating">
+                    <textarea class="form-control" placeholder="" maxlength="230" id="inspectionRemarkInput" name="inspectionRemarkInput" style="height: 150px"></textarea>
+                    <label id="inspectionRemarkLabel" name="inspectionRemarkLabel" for="inspectionRemarkInput">หมายเหตุผลตรวจสภาพ</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-auto">
+                                <i class="fa-solid fa-envelopes-bulk fa-lg"></i>
+                                <span class="me-2">ช่องทางรับเอกสาร</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-sm-3 col-6 mb-3">
+                                <div class="card h-100"
+                                     data-bs-toggle="collapse">
+                                    <input type="radio" class="btn-check" name="sendPolicyRadio" id="sendEpolicyRadio" autocomplete="off" checked>
+                                    <label class="btn btn-outline-secondary py-5 h-100" for="sendEpolicyRadio">
+                                        <i class="fa-solid fa-envelope-open-text fa-2xl mb-4"></i><br />
+                                        E-Policy
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-sm-3 col-6 mb-3">
+                                <div class="card h-100"
+                                     data-bs-toggle="collapse">
+                                    <input type="radio" class="btn-check" name="sendPolicyRadio" id="sendPaperRadio" autocomplete="off">
+                                    <label class="btn btn-outline-secondary py-5 h-100" for="sendPaperRadio">
+                                        <i class="fa-solid fa-file fa-2xl mb-4"></i><br />
+                                        Paper
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-6 col-12">
+                                <div class="collapse show" id="ePolicyCollapse">
+                                    <div class="card card-body">
+                                        <h4 class="text-center mb-3">
+                                            <span class="badge text-bg-secondary">
+                                                <i class="fa-solid fa-envelope-open-text fa-lg"></i>
+                                                E-Policy
+                                            </span>
+                                        </h4>
+                                        <span><i class="text-success fa-solid fa-check fa-lg"></i> ได้รับกรมธรรม์ฉบับจริงทาง Email ในรูปแบบ E-Policy ภายใน 30 นาที</span>
+                                        <span><i class="text-danger fa-solid fa-xmark fa-lg"></i> ไม่ได้รับกรมธรรม์ฉบับจริงในรูปแบบเอกสาร</span>
+                                        <span><i class="text-danger fa-solid fa-xmark fa-lg"></i> ไม่ได้รับสำเนากรมธรรม์ทาง Email</span>
+                                    </div>
+                                </div>
+                                <div class="collapse" id="paperCollapse">
+                                    <div class="card card-body">
+                                        <h4 class="text-center mb-3">
+                                            <span class="badge text-bg-secondary">
+                                                <i class="fa-solid fa-file fa-lg"></i>
+                                                Paper
+                                            </span>
+                                        </h4>
+                                        <span><i class="text-success fa-solid fa-check fa-lg"></i> ได้รับกรมธรรม์ฉบับจริงในรูปแบบเอกสาร ภายใน 7 วันทำการ</span>
+                                        <span><i class="text-success fa-solid fa-check fa-lg"></i> ได้รับสำเนากรมธรรม์ทาง Email ภายใน 1 วัน</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-3">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="row">
+                            <div class="col-auto">
+                                <i class="fa-solid fa-cash-register fa-lg"></i>
+                                <span class="me-2">ช่องทางการชำระ</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="btn-group mb-3" role="group">
+                                    <input type="radio" class="btn-check" name="channelPaymentRadio" id="paymentOnlineRadio" autocomplete="off" checked>
+                                    <label class="btn btn-outline-primary" for="paymentOnlineRadio">ชำระออนไลน์</label>
+                                    <input type="radio" class="btn-check" name="channelPaymentRadio" id="installmentOnlineRadio" autocomplete="off">
+                                    <label class="btn btn-outline-primary" for="installmentOnlineRadio">ผ่อนชำระ</label>
+                                </div>
+                                <div class="row" id="paymentOnlineBox">
+                                    <div class="col-12">
+                                        <div class="card h-100">
+                                            <div class="card-header">
+                                                <div class="row">
+                                                    <div class="col-auto">
+                                                        <i class="fa-solid fa-basket-shopping fa-lg"></i>
+                                                        <span class="me-2">ชำระออนไลน์</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <div class="col-sm-3 col-6 mb-3">
+                                                        <div class="card h-100"
+                                                             data-bs-toggle="tooltip"
+                                                             data-bs-trigger="hover"
+                                                             data-bs-html="true"
+                                                             data-bs-placement="bottom"
+                                                             data-bs-title="<span class='fs-6'>ชำระเบี้ยที่ ที โบรคเกอร์</span>">
+                                                            <input type="radio" class="btn-check" name="channelPaymentOnlineRadio" id="qrCodeKBankRadio" autocomplete="off" checked>
+                                                            <label class="btn btn-outline-secondary py-5 h-100" for="qrCodeKBankRadio">
+                                                                <i class="fa-solid fa-qrcode fa-2xl mb-4"></i><br />
+                                                                QR Code
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-sm-3 col-6 mb-3">
+                                                        <div class="card h-100"
+                                                             data-bs-toggle="tooltip"
+                                                             data-bs-trigger="hover"
+                                                             data-bs-html="true"
+                                                             data-bs-placement="bottom"
+                                                             data-bs-title="<span class='fs-6'>ชำระเบี้ยที่ บริษัทประกัน</span>">
+                                                            <input type="radio" class="btn-check" name="channelPaymentOnlineRadio" id="creditCardT2PRadio" autocomplete="off">
+                                                            <label class="btn btn-outline-secondary py-5 h-100" for="creditCardT2PRadio">
+                                                                <i class="fa-regular fa-credit-card fa-2xl mb-4"></i><br />
+                                                                Credit Card (T2P)
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <div class="card">
+                                                            <div class="card-header">
+                                                                <div class="row">
+                                                                    <div class="col-auto">
+                                                                        <i class="fa-solid fa-money-bill fa-lg"></i>
+                                                                        <span class="me-2">รูปแบบการชำระ</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="card-body">
+                                                                <div class="row">
+                                                                    <div class="col-sm-3 col-6 mb-3" id="netCommPaymentSection">
+                                                                        <div class="card h-100"
+                                                                             data-bs-toggle="tooltip"
+                                                                             data-bs-trigger="hover"
+                                                                             data-bs-html="true"
+                                                                             data-bs-placement="bottom"
+                                                                             data-bs-title="<span class='fs-6'>ชำระแบบหักค่าคอมมิชชั่น</span>">
+                                                                            <input type="radio" class="btn-check" name="patternPaymentRadio" id="netCommPaymentRadio" autocomplete="off" checked>
+                                                                            <label class="btn btn-outline-secondary py-5 h-100" for="netCommPaymentRadio">
+                                                                                <i class="fa-solid fa-hand-holding-dollar fa-2xl mb-4"></i><br />
+                                                                                Net Comm
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="col-sm-3 col-6 mb-3" id="fullPaymentSection">
+                                                                        <div class="card h-100"
+                                                                             data-bs-toggle="tooltip"
+                                                                             data-bs-trigger="hover"
+                                                                             data-bs-html="true"
+                                                                             data-bs-placement="bottom"
+                                                                             data-bs-title="<span class='fs-6'>ชำระเต็มจำนวนแบบไม่หักค่าคอมมิชชั่น</span>">
+                                                                            <input type="radio" class="btn-check" name="patternPaymentRadio" id="fullPaymentRadio" autocomplete="off">
+                                                                            <label class="btn btn-outline-secondary py-5 h-100" for="fullPaymentRadio">
+                                                                                <i class="fa-solid fa-store fa-2xl mb-4"></i><br />
+                                                                                Full Payment
+                                                                            </label>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row" id="installmentOnlineBox" hidden>
+                                    <div class="col-12">
+                                        <div class="card">
+                                            <div class="card-header">
+                                                <div class="row">
+                                                    <div class="col-auto">
+                                                        <i class="fa-solid fa-filter-circle-dollar fa-lg"></i>
+                                                        <span class="me-2">ผ่อนชำระ</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="card-body">
+                                                <div class="row">
+                                                    <div class="col-sm-3 col-6 mb-3">
+                                                        <div class="card"
+                                                             data-bs-toggle="tooltip"
+                                                             data-bs-trigger="hover"
+                                                             data-bs-html="true"
+                                                             data-bs-placement="bottom"
+                                                             data-bs-title="<span class='fs-6'>ผ่อนชำระดิจิทัล</span>">
+                                                            <input type="radio" class="btn-check" name="installmentRadio" id="installmentDigitalRadio" autocomplete="off" checked>
+                                                            <label class="btn btn-outline-secondary py-5" for="installmentDigitalRadio">
+                                                                <i class="fa-solid fa-file-invoice fa-2xl mb-4"></i><br />
+                                                                Installment Digital
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-lg-4 col-sm-6 col-12 mb-3">
+                                                        <label for="emailVerifyInput" class="form-label">อีเมล <span class="text-danger">(สำหรับยื่นยันตัวตน)</span></label>
+                                                        <input type="text" class="form-control form-control-sm" id="emailVerifyInput" name="emailVerifyInput" placeholder="อีเมล (สำหรับยืนยันตัวตน)">
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-lg-4 col-sm-6 col-12 mb-3">
+                                                        <label for="" class="form-label">จำนวนงวด</label> <i class="fa-solid fa-star-of-life fa-2xs text-danger"></i>
+                                                        <select class="form-select form-select-sm" id="" name="">
+                                                            <option selected value="">กรุณาเลือก</option>
+                                                            <option value="3">3 งวด</option>
+                                                            <option value="6">6 งวด</option>
+                                                            <option value="10">10 งวด</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-lg-8 col-12">
+                                                        <div class="row">
+                                                            <div class="col-sm-6 col-12 mb-3 text-end">
+                                                                <label for="firstInstallmentInput" class="form-label">ยอดชำระงวดแรก (บาท)</label>
+                                                                <input type="text" class="form-control form-control-sm text-end readonly" readonly id="firstInstallmentInput" name="firstInstallmentInput" placeholder="ยอดชำระงวดแรก">
+                                                            </div>
+                                                            <div class="col-sm-6 col-12 mb-3 text-end">
+                                                                <label for="nextInstallmentInput" class="form-label">ยอดชำระงวดถัดไป (บาท)</label>
+                                                                <input type="text" class="form-control form-control-sm text-end readonly" readonly id="nextInstallmentInput" name="nextInstallmentInput" placeholder="ยอดชำระงวดถัดไป">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-auto">
+                <button class="btn btn-lg btn-success" title="แจ้งงาน" type="submit" id="" onclick="">
+                    <i class="fa-solid fa-check fa-xl"></i>
+                    <span>แจ้งงาน</span>
+                </button>
+                <button class="btn btn-lg btn-danger" title="ยกเลิก" type="reset" id="">
+                    <i class="fa-solid fa-xmark fa-xl"></i>
+                    <span>ยกเลิก</span>
+                </button>
+            </div>
+        </div>
+
+    </form>
+</content>
+
+@section Scripts {
+    <!-- JS DataTables + Bootstrap 5 -->
+    <script src="https://cdn.datatables.net/2.3.2/js/dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/2.3.2/js/dataTables.bootstrap5.min.js"></script>
+
+    <!-- JS FixedHeader -->
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/fixedheader/4.0.2/js/dataTables.fixedHeader.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/fixedheader/4.0.2/js/fixedHeader.bootstrap5.min.js"></script>
+
+    <!-- JS RowGroup -->
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/rowgroup/1.5.1/js/dataTables.rowGroup.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/rowgroup/1.5.1/js/rowGroup.bootstrap5.min.js"></script>
+
+    <!-- JS Responsive -->
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/responsive/3.0.4/js/dataTables.responsive.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/responsive/3.0.4/js/responsive.bootstrap5.min.js"></script>
+
+    <!-- JS RowReorder -->
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/rowreorder/1.5.0/js/dataTables.rowReorder.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/rowreorder/1.5.0/js/rowReorder.bootstrap5.min.js"></script>
+
+}

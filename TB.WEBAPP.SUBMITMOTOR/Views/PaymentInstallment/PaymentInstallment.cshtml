@@ -1,0 +1,53 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "ชำระเงิน";
+    Layout = null;
+}
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - T Broker</title>
+
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Prompt" asp-append-version="true">
+    <link rel="icon" type="image/png" href="~/image/icon/tbroker.ico" sizes="32x32" asp-append-version="true">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+    <content>
+        <form id="paymentInstallment" method="POST" asp-controller="" asp-action="" autocomplete="off">
+            @Html.AntiForgeryToken()
+            <div class="d-flex justify-content-center align-items-center vh-100">
+                <div class="card shadow p-4" style="width: 26rem;">
+                    <div class="card-body text-center">
+                        <div class="row justify-content-center mb-3">
+                            <div class="col-auto w-100">
+                                <img src="/image/logo-company/tbroker_header.png" class="rounded img-fluid" alt="T Broker Logo" asp-append-version="true" />
+                            </div>
+                        </div>
+                        <h5 class="card-title mb-3">ชำระเงิน</h5>
+                        <p class="text-muted">
+                            กรุณาตรวจสอบรายละเอียดยอดเงินที่ต้องชำระด้านล่างให้ถูกต้องก่อนดำเนินการชำระเงิน
+                            หากมีข้อสงสัยหรือต้องการสอบถามเพิ่มเติม กรุณาติดต่อฝ่ายบริการลูกค้า
+                        </p>
+                        <span class="mt-2">
+                            ขอขอบคุณที่ใช้บริการของเรา
+                        </span>
+                        <div class="my-3">
+                            <span class="form-label">ยอดเงินที่ต้องชำระ</span>
+                            <h3 class="text-success">5,000.00</h3>
+                        </div>
+                        @Html.AntiForgeryToken()
+                        <button type="button" id="paymentButton" class="btn btn-success w-100">ชำระเงิน</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </content>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="module" src="@Url.Content("~/js/helper/utility.js")" asp-append-version="true"></script>
+    <script type="module" src="@Url.Content("~/js/payment/installment/index.js")" asp-append-version="true"></script>
+</body>

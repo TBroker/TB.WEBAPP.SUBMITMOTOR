@@ -1,0 +1,36 @@
+﻿input.disabled-radio {
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+.pointer-disabled {
+    pointer-events: none;
+}
+
+.form-select-disabled {
+    background-image: none !important;
+}
+
+.color-tbroker {
+    color: #f16f24;
+}
+
+select.readonly {
+    pointer-events: none;
+    background-color: #eee;
+}
+
+input.readonly {
+    pointer-events: none;
+    background-color: #eee;
+}
+
+radio.readonly {
+    pointer-events: none;
+    background-color: #eee;
+}
+
+label.readonly {
+    pointer-events: none;
+}
+

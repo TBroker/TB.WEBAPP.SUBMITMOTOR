@@ -1,0 +1,123 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - T Broker</title>
+
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Prompt" asp-append-version="true">
+    <link rel="icon" type="image/png" href="~/image/icon/tbroker.ico" sizes="32x32" asp-append-version="true">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/TB.WEBAPP.SUBMITMOTOR.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/utility.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/pageloader.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.22.0/dist/sweetalert2.min.css" integrity="sha256-NWFDlc+2O5YBqGykjREpkSKDMB6yEu5qPecoRrhcsC0=" crossorigin="anonymous">
+
+    <!-- Flatpickr -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" type="text/css" href="https://npmcdn.com/flatpickr/dist/themes/material_orange.css">
+
+    <!-- Animate -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+
+    @await RenderSectionAsync("Styles", required: false)
+</head>
+<body>
+    <div id="overlay">
+        <div class="position-absolute top-50 start-50 translate-middle">
+            <div class="animate__animated animate__pulse animate__fast animate__infinite infinite">
+                <div class="row justify-content-center align-content-center">
+                    <div class="col-lg-4 col-md-6 col-12">
+                        <div class="d-flex justify-content-center align-items-center">
+                            <img class="img-fluid" src="~/image/logo-company/tbroker_header.png" alt="t broker" asp-append-version="true" />
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <h3 class="text-white">กรุณารอสักครู่ <i class="fa-solid fa-spinner fa-spin-pulse"></i></h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <header>
+        <nav class="navbar fixed-top">
+            <div class="container-fluid">
+                <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+                    <div class="offcanvas-header">
+                        <div class="text-md-start text-sm-center">
+                            <img src="~/image/logo-company/tbroker_menu.png" class="rounded img-fluid" alt="T Broker Menu" width="250" asp-append-version="true" />
+                        </div>
+                        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                    </div>
+                    <div class="offcanvas-body">
+                        <ul class="navbar-nav justify-content-start flex-grow-1 pe-3">
+                            <li class="nav-item">
+                                <a class="nav-link" aria-current="page" href="#"><i class="fa-solid fa-house fa-xl"></i> หน้าแรก</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#"><i class="fa-solid fa-car fa-xl"></i> แจ้งงานรถยนต์ <span class="badge text-bg-primary">ปีแรก</span></a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#"><i class="fa-solid fa-clock-rotate-left fa-xl"></i> แจ้งงานรถยนต์ <span class="badge text-bg-primary">ปีต่ออายุ</span></a>
+                            </li>
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fa-solid fa-table-list fa-xl"></i> รายงาน
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" href="#"><i class="fa-solid fa-envelope-open-text fa-xl"></i> รายงานใบเตือนต่ออายุ</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="fa-solid fa-check-double fa-xl"></i> รายงานแจ้งงานออนไลน์</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="fa-solid fa-circle-dollar-to-slot fa-xl"></i> รายงานชำระเงินออนไลน์</a></li>
+                                    <li><a class="dropdown-item" href="#"><i class="fa-solid fa-qrcode fa-xl"></i> รายงานผ่อนชำระ</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <div class="fixed-bottom-rigth m-2">
+        <button type="button" id="scrollToTopButton" class="btn btn-outline-secondary rounded-circle"><i class="fa-solid fa-chevron-up fa-xl my-3"></i></button>
+    </div>
+
+    <div class="fixed-bottom-rigth m-2">
+        <button type="button" id="scrollToBottomButton" class="btn btn-outline-secondary rounded-circle"><i class="fa-solid fa-chevron-down fa-xl my-3"></i></button>
+    </div>
+
+    <footer id="siteFooter" class="border-top footer text-muted">
+        <div class="container">
+        </div>
+    </footer>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script type="module" src="~/js/site.js" asp-append-version="true"></script>
+    @* <script src="https://kit.fontawesome.com/1e32186682.js" crossorigin="anonymous"></script> *@
+    <script scr="~/lib/pdfjs-5.2.133-dist/build/pdf.mjs" asp-append-version="true"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.22.0/dist/sweetalert2.all.min.js" integrity="sha256-WjwoxFTbs4JzyDmrHgK4VgR+Dz7he8HYwCbocAlNn9k=" crossorigin="anonymous"></script>
+
+    <!-- Flatpickr -->
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/th.js"></script>
+
+    <!-- Day.js -->
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/dayjs.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/dayjs@1/locale/th.js"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

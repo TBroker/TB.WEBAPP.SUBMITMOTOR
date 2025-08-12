@@ -1,0 +1,205 @@
+﻿@{
+    ViewData["Title"] = "หน้าหลัก";
+}
+@section Styles {
+    <style>
+        .grayscale {
+            filter: grayscale(100%);
+        }
+    </style>
+}
+<content>
+    @Html.AntiForgeryToken()
+    <div class="row justify-content-center align-content-center">
+        <div class="col-auto my-5">
+            <div class="d-flex justify-content-center align-items-center">
+                <img class="img-fluid w-50" src="~/image/logo-company/tbroker_header.png" alt="t broker" asp-append-version="true" />
+            </div>
+        </div>
+    </div>
+
+     <!-- Modal -->
+    <div id="promotionModel">
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card card-body mb-3">
+                <div class="col-12">
+                    <div class="d-flex justify-content-end align-items-center" id="promotionContainer">
+                    </div>
+                </div>
+                <hr />
+                <div class="col-12 mb-3">
+                    <div class="row">
+                        <div class="col-lg-3 col-12 text-start">
+                            <div class="row">
+                                <div class="col-lg-12 col-md-4 col-12 mb-3">
+                                    <span class="fw-bold">ผลงานสะสมเบี้ย</span>
+                                    <h4 class="m-0">
+                                        <span class="badge rounded-pill bg-secondary">
+                                            <i class="fa-solid fa-medal fa-lg"></i>
+                                            <span id="pointSpan" class="count" data-target="0">0</span>
+                                        </span>
+                                    </h4>
+                                </div>
+                                <div class="col-lg-12 col-md-4 col-12 mb-3">
+                                    <span class="fw-bold">นายหน้าสีส้ม</span>
+                                    <h4 class="m-0">
+                                        <span class="badge rounded-pill bg-secondary">
+                                            <i class="fa-solid fa-user fa-lg"></i>
+                                            <span id="pointPlusSpan" class="count" data-target="0">0</span>
+                                        </span>
+                                    </h4>
+                                </div>
+                                <div class="col-lg-12 col-md-4 col-12 mb-3">
+                                    <span class="fw-bold">โปรโมชั่นประจำเดือน</span>
+                                    <h4 class="m-0">
+                                        <span class="badge rounded-pill bg-secondary">
+                                            <i class="fa-solid fa-star fa-lg"></i>
+                                            <span id="pointMonthlySpan" class="count" data-target="0">0</span>
+                                        </span>
+                                    </h4>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-12">
+                            <div class="row" id="rewardListContainer">
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-12 text-end">
+                            <div class="col-12">
+                                <span class="fw-bold">คะแนนรวม</span>
+                                <h4 class="m-0">
+                                    <span class="badge rounded-pill bg-secondary">
+                                        <i class="fa-solid fa-ranking-star fa-lg"></i>
+                                        <span id="pointTotalSpan" class="count" data-target="0">0</span>
+                                    </span>
+                                </h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <span class="form-label m-0 fs-6 text-danger">หมายเหตุ : ผลงานสะสมเบี้ย และโปรโมชั่นประจำเดือน อัพเดตประจำทุกสัปดาห์ นายหน้าสีส้ม อัพเดตประจำทุกเดือน </span><span class="text-danger" id="dateAsOfSpan"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 justify-content-center">
+        <div class="col-lg-3 col-md-4 col-6 mb-3">
+            <a class="text-decoration-none" href="@Url.Action("Index", "SubmitMotorNew")" target="_top">
+                <div class="card card-body h-100">
+                    <div class="row align-items-center">
+                        <div class="col-12 p-2">
+                            <div class="text-center mb-3">
+                                <span class="fs-1">
+                                    <i class="fa-solid fa-car fa-2xl"></i>
+                                </span>
+                            </div>
+                            <div class="text-center align-self-center">
+                                <span class="fs-5">แจ้งงานรถยนต์ (ปีแรก)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-lg-3 col-md-4 col-6 mb-3">
+            <a class="text-decoration-none" href="" target="_top">
+                <div class="card card-body h-100">
+                    <div class="row align-items-center">
+                        <div class="col-12 p-2">
+                            <div class="text-center mb-3">
+                                <span class="fs-1">
+                                    <i class="fa-solid fa-clock-rotate-left fa-2xl"></i>
+                                </span>
+                            </div>
+                            <div class="text-center align-self-center">
+                                <span class="fs-5">แจ้งงานรถยนต์ (ต่ออายุ)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-lg-3 col-md-4 col-6 mb-3">
+            <a class="text-decoration-none" href="" target="_top">
+                <div class="card card-body h-100">
+                    <div class="row align-items-center">
+                        <div class="col-12 p-2">
+                            <div class="text-center mb-3">
+                                <span class="fs-1">
+                                    <i class="fa-solid fa-envelope-open-text fa-2xl"></i>
+                                </span>
+                            </div>
+                            <div class="text-center align-self-center">
+                                <span class="fs-5">รายงานใบเตือนต่ออายุ</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-lg-3 col-md-4 col-6 mb-3">
+            <a class="text-decoration-none" href="" target="_top">
+                <div class="card card-body h-100">
+                    <div class="row align-items-center">
+                        <div class="col-12 p-2">
+                            <div class="text-center mb-3">
+                                <span class="fs-1">
+                                    <i class="fa-solid fa-check-double fa-2xl"></i>
+                                </span>
+                            </div>
+                            <div class="text-center align-self-center">
+                                <span class="fs-5">รายงานแจ้งงานออนไลน์</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-lg-3 col-md-4 col-6 mb-3">
+            <a class="text-decoration-none" href="" target="_top">
+                <div class="card card-body h-100">
+                    <div class="row align-items-center">
+                        <div class="col-12 p-2">
+                            <div class="text-center mb-3">
+                                <span class="fs-1">
+                                    <i class="fa-solid fa-circle-dollar-to-slot fa-2xl"></i>
+                                </span>
+                            </div>
+                            <div class="text-center align-self-center">
+                                <span class="fs-5">รายงานชำระเงินออนไลน์</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-lg-3 col-md-4 col-6 mb-3">
+            <a class="text-decoration-none" href="" target="_top">
+                <div class="card card-body h-100">
+                    <div class="row align-items-center">
+                        <div class="col-12 p-2">
+                            <div class="text-center mb-3">
+                                <span class="fs-1">
+                                    <i class="fa-solid fa-qrcode fa-2xl"></i>
+                                </span>
+                            </div>
+                            <div class="text-center align-self-center">
+                                <span class="fs-5">รายงานผ่อนชำระ</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+</content>
+
+@section Scripts {
+    <script type="module" src="@Url.Content("~/js/home/index.js")" asp-append-version="true"></script>
+}

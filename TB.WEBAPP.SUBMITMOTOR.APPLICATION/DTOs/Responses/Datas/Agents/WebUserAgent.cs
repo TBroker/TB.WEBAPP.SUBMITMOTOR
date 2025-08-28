@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace TB.WEBAPP.SUBMITMOTOR.APPLICATION.DTOs.Responses.Datas.Agents
+namespace TB.WEBAPP.SUBMITMOTOR.APPLICATION.DTOs.Responses.Data.Agents
 {
     public class WebUserAgent
     {

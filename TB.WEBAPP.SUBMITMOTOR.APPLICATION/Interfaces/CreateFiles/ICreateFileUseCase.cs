@@ -6,6 +6,8 @@ namespace TB.WEBAPP.SUBMITMOTOR.APPLICATION.Interfaces.CreateFiles
     {
         Task<byte[]> CreateFileContactInstallment(CreateFileContractInstallmentRequest request);
 
-        Task<byte[]> CreateFileCoverNote(CreateFileCoverNoteRequest request);
+        Task<byte[]> CreateFileCoverNoteVoluntary(CreateFileCoverNoteRequest request);
+
+        Task<byte[]> CreateFileCoverNoteCompulsory(CreateFileCoverNoteRequest request);
     }
 }

@@ -1,13 +1,4 @@
-﻿import * as Doms from "./dom.js";
-
-// Initialize file input event listeners for verification file uploads
-export async function initVerificationFile() {
-    document.querySelectorAll('input[type="file"]').forEach(input => {
-        input.addEventListener('change', async function () {
-            await Doms.handleFileUpload(this);
-        });
-    });
-}
+﻿import * as Alerts from "../../helper/alert.js";
 
 export async function initSubmitConfrim() {
     document.getElementById('submitMobileButton').addEventListener('click', async function () {
@@ -21,42 +12,37 @@ export async function initSubmitConfrim() {
         // รวบรวมข้อมูลทั้งหมดจาก form
         const formData = new FormData(form);
 
-        fetch('/VerifyIdentity/ConFirmMobile', {
+        fetch('/VerifyIdentity/ConfirmMobile', {
             method: 'POST',
             body: formData
         })
             .then(response => response.json())
-            .then(result => {
-                console.log(result);
-
+            .then(async result => {
                 if (result.success) {
-                    window.location.href = `/ContractInstallment/ContactInstallment/${result.data.formData}`;
-                } else {
-                    alert(`เกิดข้อผิดพลาด: ${result.message}`);
+                    await Alerts.showAlertAndRedirect(new Object({
+                        title: 'ส่งข้อมูล',
+                        html: `<p>ส่งข้อมูลสําเร็จ</p>`,
+                        icon: 'success',
+                        url: `/ContractInstallment/ContactInstallment/${result.data.formData}`,
+                        confirmButtonText: 'ตกลง'
+                    }));
+                    return;
                 }
 
-                //if (data.success) {
-                //    messageDiv.className = 'alert alert-success mt-3';
-                //    messageDiv.innerHTML = `
-                //    <strong>สำเร็จ!</strong> ${data.message}<br>
-                //    <small>บันทึกข้อมูลทั้งหมด ${data.data.totalFields} ฟิลด์</small>
-                //`;
-
-                //    // ล้างข้อมูลหลังบันทึกสำเร็จ (ถ้าต้องการ)
-                //    // form.reset();
-                //} else {
-                //    messageDiv.className = 'alert alert-danger mt-3';
-                //    messageDiv.innerHTML = `<strong>เกิดข้อผิดพลาด!</strong> ${data.message}`;
-                //}
-                //messageDiv.style.display = 'block';
-
-                //// เลื่อนไปที่ message
-                //messageDiv.scrollIntoView({ behavior: 'smooth' });
+                await Alerts.showAlert(new Object({
+                    icon: `warning`,
+                    title: `<h5>แจ้งเตือน</h4>`,
+                    text: `<span class="text-danger">${result.message}</div>`,
+                }));
             })
-            .catch(error => {
-                //messageDiv.className = 'alert alert-danger mt-3';
-                //messageDiv.innerHTML = '<strong>เกิดข้อผิดพลาด!</strong> ไม่สามารถส่งข้อมูลได้';
-                //messageDiv.style.display = 'block';
+            .catch(async error => {
+                await Alerts.showAlert(new Object({
+                    icon: `error`,
+                    title: `<h5>พบปัญหา</h4>`,
+                    text: `<span class="text-danger">${error}</div>`,
+                }));
+                button.disabled = false;
+                button.innerHTML = '<span>ส่งข้อมูล</span>';
                 console.error('Error:', error);
             })
             .finally(async () => {

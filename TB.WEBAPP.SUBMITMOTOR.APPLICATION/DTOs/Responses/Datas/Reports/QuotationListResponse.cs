@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace TB.WEBAPP.SUBMITMOTOR.APPLICATION.DTOs.Responses.Datas.Reports
+namespace TB.WEBAPP.SUBMITMOTOR.APPLICATION.DTOs.Responses.Data.Reports
 {
     public class QuotationListResponse
     {

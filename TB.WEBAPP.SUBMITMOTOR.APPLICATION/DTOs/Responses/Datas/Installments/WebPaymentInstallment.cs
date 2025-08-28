@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
-namespace TB.WEBAPP.SUBMITMOTOR.APPLICATION.DTOs.Responses.Datas.Installments
+namespace TB.WEBAPP.SUBMITMOTOR.APPLICATION.DTOs.Responses.Data.Installments
 {
     public class WebPaymentInstallment
     {

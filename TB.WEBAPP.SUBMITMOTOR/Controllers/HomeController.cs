@@ -5,6 +5,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using TB.WEBAPP.SUBMITMOTOR.APPLICATION.DTOs.Requests.CoreSystems.Agents;
+using TB.WEBAPP.SUBMITMOTOR.APPLICATION.DTOs.Responses.CoreSystems.Agents;
 using TB.WEBAPP.SUBMITMOTOR.APPLICATION.Interfaces;
 using TB.WEBAPP.SUBMITMOTOR.APPLICATION.Interfaces.CoreSystem.Agents;
 using TB.WEBAPP.SUBMITMOTOR.Models;
@@ -13,7 +14,7 @@ namespace TB.WEBAPP.SUBMITMOTOR.Controllers
 {
     public class HomeController(ILogger<HomeController> logger
         , IAgentUseCase agentUseCase
-        ,IJwtReaderService jwtReaderService) : Controller
+        , IJwtReaderService jwtReaderService) : Controller
     {
         private readonly ILogger<HomeController> _logger = logger;
         private readonly IAgentUseCase _agentUseCase = agentUseCase;
@@ -37,22 +38,23 @@ namespace TB.WEBAPP.SUBMITMOTOR.Controllers
 
                 //ViewBag.AgentCode = agentInfo.Value.AgentCode;
                 //ViewBag.AgentToken = agentInfo.Value.AgentToken;
-                var agentToken = "9zWd1Q8LmUC9ZAoreAP66w86c53WDB0ijHa32O47FTQMT2Gw86jT06LWGwjfJSQtg==";
+
+                var agentToken = "/kX36Sxprk2fpHrVWy4CaglVEsbEhJYUm5jIUNami4SQ0JHuL6rhpUiwlVk2g+gYQQ==";
                 var agentCode = "2051072";
+                //var agentToken = agentInfo.Value.AgentToken;
+                //var agentCode = agentInfo.Value.AgentCode;
 
                 if (string.IsNullOrEmpty(agentToken) || string.IsNullOrEmpty(agentCode))
                 {
                     _logger.LogWarning("Received empty agent token or code.");
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("AgentNotFound", "PageError");
                 }
 
-                var agentDetailsResponse = await _agentUseCase.FetchAgentDetail(new AgentDetailRequest() { AgentCode = agentCode });
-                var agentDetail = agentDetailsResponse.Data != null && agentDetailsResponse.Data.Count > 0 ? agentDetailsResponse.Data[0] : null;
-
-                if (agentDetail == null)
+                var agentDetail = await FetchAgentDetail(agentCode);
+                if (agentDetail.AgentCode == null)
                 {
                     _logger.LogWarning("Failed to fetch agent details for AgentCode: {AgentCode}", agentCode);
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("AgentNotFound", "PageError");
                 }
 
                 var jwtToken = GenerateJwtToken(agentCode, agentToken);
@@ -70,7 +72,7 @@ namespace TB.WEBAPP.SUBMITMOTOR.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while processing the form data.");
-                return RedirectToAction("Index", "Home");
+                return View("Error", new ErrorViewModel { RequestId = "500" });
             }
         }
 
@@ -82,7 +84,7 @@ namespace TB.WEBAPP.SUBMITMOTOR.Controllers
                 if (!ModelState.IsValid)
                 {
                     _logger.LogWarning("Received invalid model state.");
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("AgentNotFound", "PageError");
                 }
 
                 var agentToken = form["token"].ToString();
@@ -91,16 +93,14 @@ namespace TB.WEBAPP.SUBMITMOTOR.Controllers
                 if (string.IsNullOrEmpty(agentToken) || string.IsNullOrEmpty(agentCode))
                 {
                     _logger.LogWarning("Received empty agent token or code.");
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("AgentNotFound", "PageError");
                 }
 
-                var agentDetailsResponse = await _agentUseCase.FetchAgentDetail(new AgentDetailRequest() { AgentCode = agentCode });
-                var agentDetail = agentDetailsResponse.Data != null && agentDetailsResponse.Data.Count > 0 ? agentDetailsResponse.Data[0] : null;
-
-                if (agentDetail == null)
+                var agentDetail = await FetchAgentDetail(agentCode);
+                if (agentDetail.AgentCode == null)
                 {
                     _logger.LogWarning("Failed to fetch agent details for AgentCode: {AgentCode}", agentCode);
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("AgentNotFound", "PageError");
                 }
 
                 var jwtToken = GenerateJwtToken(agentCode, agentToken);
@@ -118,7 +118,7 @@ namespace TB.WEBAPP.SUBMITMOTOR.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while processing the form data.");
-                return RedirectToAction("Index", "Home");
+                return View("Error", new ErrorViewModel { RequestId = "500" });
             }
         }
 
@@ -134,8 +134,8 @@ namespace TB.WEBAPP.SUBMITMOTOR.Controllers
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
-                issuer: "your-app",
-                audience: "your-app",
+                issuer: "SubmitMotor",
+                audience: "SubmitMotor",
                 claims: claims,
                 expires: DateTime.UtcNow.AddHours(1),
                 signingCredentials: creds);
@@ -143,6 +143,12 @@ namespace TB.WEBAPP.SUBMITMOTOR.Controllers
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
+        private async Task<AgentDetailResponse> FetchAgentDetail(string agentCode)
+        {
+            var agentDetailsResponse = await _agentUseCase.FetchAgentDetail(new AgentDetailRequest { AgentCode = agentCode });
+            agentDetailsResponse.Data = agentDetailsResponse.Data ?? []; // ตรวจสอบว่า Data ไม่เป็น null
+            return agentDetailsResponse.Data.FirstOrDefault() ?? new AgentDetailResponse(); // กำหนดค่าเริ่มต้นหากไม่มีข้อมูล
+        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

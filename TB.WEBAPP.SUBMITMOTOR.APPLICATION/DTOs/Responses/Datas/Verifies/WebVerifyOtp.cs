@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
-namespace TB.WEBAPP.SUBMITMOTOR.APPLICATION.DTOs.Responses.Datas.Verifies
+namespace TB.WEBAPP.SUBMITMOTOR.APPLICATION.DTOs.Responses.Data.Verifies
 {
     public class WebVerifyOtp
     {

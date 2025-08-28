@@ -1,0 +1,75 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    ViewData["Title"] = "ชำระเงิน";
+    Layout = null;
+}
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - T Broker</title>
+
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Prompt" asp-append-version="true">
+    <link rel="icon" type="image/png" href="~/image/icon/tbroker.ico" sizes="32x32" asp-append-version="true">
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/TB.WEBAPP.SUBMITMOTOR.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/utility.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.22.0/dist/sweetalert2.min.css" integrity="sha256-NWFDlc+2O5YBqGykjREpkSKDMB6yEu5qPecoRrhcsC0=" crossorigin="anonymous">
+</head>
+<body>
+    <content>
+        <form id="paymentQrCodeForm" method="POST" asp-controller="PaymentKBank" asp-action="SubmitPaymentQRCodeInstallment">
+            <div class="container">
+                <div class="row">
+                    <script type="text/javascript"
+                            src="@ViewBag.KBankJS"
+                            data-apikey="@ViewBag.KBankPublicKey"
+                            data-amount="@ViewBag.Amount"
+                            data-payment-methods="qr"
+                            data-name="T Broker Co,LTD."
+                            data-order-id="@ViewBag.Id"
+                            data-show-button="false">
+                    </script>
+                </div>
+            </div>
+        </form>
+    </content>
+</body>
+
+<script type="text/javascript">
+    function preventBack() {
+        window.history.forward();
+    }
+    setTimeout("preventBack()", 0);
+    window.onunload = function () { null };
+</script>
+
+<script type="text/javascript">
+     document.addEventListener("DOMContentLoaded", function () {
+        // แสดงหน้าชำระเงิน
+        if (typeof KPayment !== "undefined" && typeof KPayment.show === "function") {
+            KPayment.show();
+        }
+
+        // ฟังก์ชันเมื่อปิดหน้าชำระเงิน
+        var merchantFunction = function () {
+            window.location.href = "/PageError/PagePayment"; // ปรับ URL ตามโครงสร้างจริง
+        };
+
+        if (typeof KPayment !== "undefined" && typeof KPayment.onClose === "function") {
+            KPayment.onClose(merchantFunction);
+        }
+
+        // ตรวจจับการ submit ของฟอร์ม
+        var forms = document.querySelectorAll("form");
+        forms.forEach(function (form) {
+            form.addEventListener("submit", function (event) {
+                // ใส่ logic ที่ต้องการเมื่อ submit ได้ที่นี่
+            });
+        });
+    });
+</script>
+

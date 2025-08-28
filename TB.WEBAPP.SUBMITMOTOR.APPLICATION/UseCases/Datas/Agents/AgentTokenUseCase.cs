@@ -1,9 +1,9 @@
 ﻿using TB.WEBAPP.SUBMITMOTOR.APPLICATION.DTOs;
-using TB.WEBAPP.SUBMITMOTOR.APPLICATION.DTOs.Responses.Datas.Agents;
+using TB.WEBAPP.SUBMITMOTOR.APPLICATION.DTOs.Responses.Data.Agents;
 using TB.WEBAPP.SUBMITMOTOR.APPLICATION.Interfaces;
-using TB.WEBAPP.SUBMITMOTOR.APPLICATION.Interfaces.Datas.Agents;
+using TB.WEBAPP.SUBMITMOTOR.APPLICATION.Interfaces.Data.Agents;
 
-namespace TB.WEBAPP.SUBMITMOTOR.APPLICATION.UseCases.Datas.Agents
+namespace TB.WEBAPP.SUBMITMOTOR.APPLICATION.UseCases.Data.Agents
 {
     public class AgentTokenUseCase(IApiClientService apiClientService) : IAgentTokenUseCase
     {

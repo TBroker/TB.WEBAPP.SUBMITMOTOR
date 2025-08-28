@@ -1,4 +1,5 @@
 ﻿import * as Doms from "./dom.js";
+import * as Alerts from "../../helper/alert.js"
 
 export async function initResendOtp() {
     document.getElementById('resendOtpButton').addEventListener('click', async function () {
@@ -18,7 +19,6 @@ export async function initResendOtp() {
         })
             .then(response => response.json())
             .then(result => {
-                console.log(result);
                 const otpReferenceSpan = document.getElementById('otpReferenceSpan');
                 otpReferenceSpan.textContent = result.data.otpRef;
 
@@ -46,39 +46,37 @@ export async function initSubmitConfrim() {
         // รวบรวมข้อมูลทั้งหมดจาก form
         const formData = new FormData(form);
 
-        fetch('/VerifyIdentity/ConFirmVerifyOtp', {
+        fetch('/VerifyIdentity/ConfirmVerifyOtp', {
             method: 'POST',
             body: formData
         })
             .then(response => response.json())
-            .then(result => {
-                if (result.success) {                    
-                    window.location.href = `/VerifyIdentity/VerifyMobile/${result.data.formData}`;
-                } else {
-                    alert(`เกิดข้อผิดพลาด: ${result.message}`);
+            .then(async result => {
+                if (result.success) {
+                    await Alerts.showAlertAndRedirect(new Object({
+                        title: 'ยืนยันรหัส OTP',
+                        html: `<p>ยืนยันรหัส OTP เรียบร้อยแล้ว</p>`,
+                        icon: 'success',
+                        url: `/VerifyIdentity/VerifyMobile/${result.data.formData}`,
+                        confirmButtonText: 'ตกลง'
+                    }));
+                    return;
                 }
-                //if (data.success) {
-                //    messageDiv.className = 'alert alert-success mt-3';
-                //    messageDiv.innerHTML = `
-                //    <strong>สำเร็จ!</strong> ${data.message}<br>
-                //    <small>บันทึกข้อมูลทั้งหมด ${data.data.totalFields} ฟิลด์</small>
-                //`;
 
-                //    // ล้างข้อมูลหลังบันทึกสำเร็จ (ถ้าต้องการ)
-                //    // form.reset();
-                //} else {
-                //    messageDiv.className = 'alert alert-danger mt-3';
-                //    messageDiv.innerHTML = `<strong>เกิดข้อผิดพลาด!</strong> ${data.message}`;
-                //}
-                //messageDiv.style.display = 'block';
-
-                //// เลื่อนไปที่ message
-                //messageDiv.scrollIntoView({ behavior: 'smooth' });
+                await Alerts.showAlert(new Object({
+                    icon: `warning`,
+                    title: `<h5>แจ้งเตือน</h4>`,
+                    text: `<span class="text-danger">${result.message}</div>`,
+                }));
             })
-            .catch(error => {
-                //messageDiv.className = 'alert alert-danger mt-3';
-                //messageDiv.innerHTML = '<strong>เกิดข้อผิดพลาด!</strong> ไม่สามารถส่งข้อมูลได้';
-                //messageDiv.style.display = 'block';
+            .catch(async error => {
+                await Alerts.showAlert(new Object({
+                    icon: `error`,
+                    title: `<h5>พบปัญหา</h4>`,
+                    text: `<span class="text-danger">${error}</div>`,
+                }));
+                button.disabled = false;
+                button.innerHTML = '<span>ยืนยันรหัส OTP</span>';
                 console.error('Error:', error);
             })
             .finally(async () => {

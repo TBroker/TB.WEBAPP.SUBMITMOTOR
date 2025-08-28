@@ -3,6 +3,7 @@ using TB.WEBAPP.SUBMITMOTOR.APPLICATION.DTOs.Requests.CoreSystems.Agents;
 using TB.WEBAPP.SUBMITMOTOR.APPLICATION.DTOs.Requests.CoreSystems.Installments;
 using TB.WEBAPP.SUBMITMOTOR.APPLICATION.DTOs.Requests.CoreSystems.Masters;
 using TB.WEBAPP.SUBMITMOTOR.APPLICATION.DTOs.Requests.CoreSystems.Quotations;
+using TB.WEBAPP.SUBMITMOTOR.APPLICATION.Interfaces;
 using TB.WEBAPP.SUBMITMOTOR.APPLICATION.Interfaces.CoreSystem.Agents;
 using TB.WEBAPP.SUBMITMOTOR.APPLICATION.Interfaces.CoreSystems.Installments;
 using TB.WEBAPP.SUBMITMOTOR.APPLICATION.Interfaces.CoreSystems.Masters;
@@ -12,16 +13,33 @@ namespace TB.WEBAPP.SUBMITMOTOR.Controllers.Service
 {
     [Route("api/agent/")]
     [ApiController]
-    public class AgentController(IAgentUseCase getAgentDetailUseCase) : ControllerBase
+    public class AgentController(
+        IAgentUseCase getAgentDetailUseCase
+        , IJwtReaderService jwtReaderService
+        ) : ControllerBase
     {
         private readonly IAgentUseCase _getAgentDetailUseCase = getAgentDetailUseCase;
+        private readonly IJwtReaderService _jwtReaderService = jwtReaderService;
+
 
         [HttpPost]
         [Route("fetch/detail")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> FetchAgentDetail()
         {
-            var response = await _getAgentDetailUseCase.FetchAgentDetail(new AgentDetailRequest() { AgentCode = "2051072" });
+            var agentCookies = Request.Cookies["AgentAuth"];
+            if (string.IsNullOrEmpty(agentCookies))
+            {
+                return BadRequest("Invalid agent information.");
+            }
+
+            var agentInfo = _jwtReaderService.ReadAgentInfo(agentCookies);
+            if (agentInfo == null)
+            {
+                return BadRequest("Invalid agent information.");
+            }
+
+            var response = await _getAgentDetailUseCase.FetchAgentDetail(new AgentDetailRequest() { AgentCode = agentInfo.Value.AgentCode });
             return Ok(response);
         }
     }

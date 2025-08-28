@@ -1,10 +1,10 @@
 ﻿using TB.WEBAPP.SUBMITMOTOR.APPLICATION.DTOs;
-using TB.WEBAPP.SUBMITMOTOR.APPLICATION.DTOs.Requests.Datas.Premiums;
-using TB.WEBAPP.SUBMITMOTOR.APPLICATION.DTOs.Responses.Datas.Premiums;
+using TB.WEBAPP.SUBMITMOTOR.APPLICATION.DTOs.Requests.Data.Premiums;
+using TB.WEBAPP.SUBMITMOTOR.APPLICATION.DTOs.Responses.Data.Premiums;
 using TB.WEBAPP.SUBMITMOTOR.APPLICATION.Interfaces;
-using TB.WEBAPP.SUBMITMOTOR.APPLICATION.Interfaces.Datas.Premiums;
+using TB.WEBAPP.SUBMITMOTOR.APPLICATION.Interfaces.Data.Premiums;
 
-namespace TB.WEBAPP.SUBMITMOTOR.APPLICATION.UseCases.Datas.Premiums
+namespace TB.WEBAPP.SUBMITMOTOR.APPLICATION.UseCases.Data.Premiums
 {
     public class PremiumUseCase(IApiClientService apiClientService) :IPremiumUseCase
     {

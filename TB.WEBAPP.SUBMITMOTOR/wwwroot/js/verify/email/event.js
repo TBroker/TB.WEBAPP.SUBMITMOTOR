@@ -1,4 +1,6 @@
-﻿export async function initSubmitConfrim() {
+﻿import * as Alerts from "../../helper/alert.js";
+
+export async function initSubmitConfrim() {
     document.getElementById('verifyCardIdButton').addEventListener('click', async function () {
         const button = this;
         const form = document.getElementById('verifyEmailForm');
@@ -10,35 +12,35 @@
         // รวบรวมข้อมูลทั้งหมดจาก form
         const formData = new FormData(form);
 
-        fetch('/VerifyIdentity/ConFirmVerifyCardID', {
+        fetch('/VerifyIdentity/ConfirmVerifyCardID', {
             method: 'POST',
             body: formData
         })
             .then(response => response.json())
-            .then(data => {
-                console.log(data);
-                //if (data.success) {
-                //    messageDiv.className = 'alert alert-success mt-3';
-                //    messageDiv.innerHTML = `
-                //    <strong>สำเร็จ!</strong> ${data.message}<br>
-                //    <small>บันทึกข้อมูลทั้งหมด ${data.data.totalFields} ฟิลด์</small>
-                //`;
+            .then(async data => {
+                if (data.success) {
+                   await Alerts.showAlert(new Object({
+                        icon: `success`,
+                        title: `<h5>แจ้งเตือน</h4>`,
+                        text: `<span class="text-success">${data.message}</div>`,
+                    }));
+                    return;
+                }
 
-                //    // ล้างข้อมูลหลังบันทึกสำเร็จ (ถ้าต้องการ)
-                //    // form.reset();
-                //} else {
-                //    messageDiv.className = 'alert alert-danger mt-3';
-                //    messageDiv.innerHTML = `<strong>เกิดข้อผิดพลาด!</strong> ${data.message}`;
-                //}
-                //messageDiv.style.display = 'block';
-
-                //// เลื่อนไปที่ message
-                //messageDiv.scrollIntoView({ behavior: 'smooth' });
+                await Alerts.showAlert(new Object({
+                    icon: `warning`,
+                    title: `<h5>แจ้งเตือน</h4>`,
+                    text: `<span class="text-danger">${data.message}</div>`,
+                }));
             })
-            .catch(error => {
-                //messageDiv.className = 'alert alert-danger mt-3';
-                //messageDiv.innerHTML = '<strong>เกิดข้อผิดพลาด!</strong> ไม่สามารถส่งข้อมูลได้';
-                //messageDiv.style.display = 'block';
+            .catch(async error => {
+                await Alerts.showAlert(new Object({
+                    icon: `error`,
+                    title: `<h5>พบปัญหา</h4>`,
+                    text: `<span class="text-danger">${error}</div>`,
+                }));
+                button.disabled = false;
+                button.innerHTML = '<span>ดำเนินการต่อ</span>';
                 console.error('Error:', error);
             })
             .finally(async () => {

@@ -187,52 +187,55 @@ export async function loadQuotationReportList() {
 
         //// โหลด DOM
         //await Pageloads.delay(2000).then(async () => {
-            const registrationCarSearchInput = document.getElementById("registrationCarSearchInput"); // เลขทะเบียน
-            const customerSearchInput = document.getElementById("customerSearchInput"); // ชื่อลูกค้า
-            const quotationStartDateSearchInput = document.getElementById("quotationStartDateSearchInput"); // วันเริ่มต้น
-            const quotationEndDateSearchInput = document.getElementById("quotationEndDateSearchInput"); // วันสิ้นสุด
+        const registrationCarSearchInput = document.getElementById("registrationCarSearchInput"); // เลขทะเบียน
+        const customerSearchInput = document.getElementById("customerSearchInput"); // ชื่อลูกค้า
+        const quotationStartDateSearchInput = document.getElementById("quotationStartDateSearchInput"); // วันเริ่มต้น
+        const quotationEndDateSearchInput = document.getElementById("quotationEndDateSearchInput"); // วันสิ้นสุด
 
-            // ดึงค่าวันที่จาก flatpickr instance
-            let startDate = null;
-            let endDate = null;
+        // ดึงค่าวันที่จาก flatpickr instance
+        let startDate = null;
+        let endDate = null;
 
-            // ตรวจสอบว่า flatpickr มีค่าหรือไม่
-            if (quotationStartDateSearchInput._flatpickr) {
-                const selectedStartDate = quotationStartDateSearchInput._flatpickr.selectedDates[0]; // วันเริ่มต้น
-                if (selectedStartDate) {
-                    startDate = dayjs(selectedStartDate).format('YYYY-MM-DD'); // วันเริ่มต้น
-                }
+        // ตรวจสอบว่า flatpickr มีค่าหรือไม่
+        if (quotationStartDateSearchInput._flatpickr) {
+            const selectedStartDate = quotationStartDateSearchInput._flatpickr.selectedDates[0]; // วันเริ่มต้น
+            if (selectedStartDate) {
+                startDate = dayjs(selectedStartDate).format('YYYY-MM-DD'); // วันเริ่มต้น
             }
+        }
 
-            // ตรวจสอบว่า flatpickr มีค่าหรือไม่
-            if (quotationEndDateSearchInput._flatpickr) {
-                const selectedEndDate = quotationEndDateSearchInput._flatpickr.selectedDates[0]; // วันสิ้นสุด
-                if (selectedEndDate) {
-                    endDate = dayjs(selectedEndDate).format('YYYY-MM-DD'); // วันสิ้นสุด
-                }
+        // ตรวจสอบว่า flatpickr มีค่าหรือไม่
+        if (quotationEndDateSearchInput._flatpickr) {
+            const selectedEndDate = quotationEndDateSearchInput._flatpickr.selectedDates[0]; // วันสิ้นสุด
+            if (selectedEndDate) {
+                endDate = dayjs(selectedEndDate).format('YYYY-MM-DD'); // วันสิ้นสุด
             }
+        }
 
-            // ถ้าไม่มีค่าให้ใช้ค่า default
-            if (!startDate) {
-                startDate = dayjs().format('YYYY-MM-DD'); // วันปัจจุบัน
-            }
-            if (!endDate) {
-                endDate = dayjs().format('YYYY-MM-DD'); // วันปัจจุบัน
-            }
+        // ถ้าไม่มีค่าให้ใช้ค่า default
+        if (!startDate) {
+            startDate = dayjs().format('YYYY-MM-DD'); // วันปัจจุบัน
+        }
+        if (!endDate) {
+            endDate = dayjs().format('YYYY-MM-DD'); // วันปัจจุบัน
+        }
+
+        console.log(startDate);
+        console.log(endDate);
 
         const result = await ApiDatas.fetchQuotationReportList({
-                name: registrationCarSearchInput.value, // ชื่อ-สกุล
-                vehicle_license: customerSearchInput.value, // เลขทะเบียนรถ
-                company_code: "TNI", // บริษัท
-                coverage_code: "", // ประเภทประกัน
-                date_start: "2025-01-30", // วันเริ่มต้น
-                date_end: "2025-06-30" // วันสิ้นสุด
-            });
+            name: registrationCarSearchInput.value, // ชื่อ-สกุล
+            vehicle_license: customerSearchInput.value, // เลขทะเบียนรถ
+            company_code: "TNI", // บริษัท
+            coverage_code: "", // ประเภทประกัน
+            date_start: startDate, // วันเริ่มต้น
+            date_end: endDate // วันสิ้นสุด
+        });
+        
+        const tableEl = document.querySelector("#orderMotorTable"); // เลือกตาราง
+        let tableInstance = await initOrderMotorTable(tableEl, result.data); // สร้างตาราง
 
-            const tableEl = document.querySelector("#orderMotorTable"); // เลือกตาราง
-            let tableInstance = await initOrderMotorTable(tableEl, result.data); // สร้างตาราง
-
-            await Events.initOrderMotorDataTables(tableEl, tableInstance); // ตั้งค่าเหตุการณ์ให้กับตาราง
+        await Events.initOrderMotorDataTables(tableEl, tableInstance); // ตั้งค่าเหตุการณ์ให้กับตาราง
         //}).finally(async () => {
         //    await Pageloads.pageLoadFadeOutModern(500); // โหลดหน้าเว็บ
         /*});        */
@@ -733,8 +736,8 @@ export function updateCarInspectionSummary() {
         summaryLabel.textContent = resultText + agentSummary + mobileText;
         summaryLabel.style.opacity = 1;
 
-         //ถ้าต้องการอัปเดต hidden input ด้วย:
-         const remarks = document.getElementById("inspectionRemarkInput").value;
+        //ถ้าต้องการอัปเดต hidden input ด้วย:
+        const remarks = document.getElementById("inspectionRemarkInput").value;
         document.getElementById("inspectionRemarkHidden").value = summaryLabel.textContent + " " + remarks;
     }, 250);
 }
@@ -864,6 +867,8 @@ export async function handleFileUpload(element) {
 
 // โหลดข้อมูลใบเสนอราคาและแสดงในฟอร์ม
 export async function loadData(dataQuotationDetail, dataTable) {
+    console.log("dataQuotationDetail : ", dataQuotationDetail);
+    console.log("dataTable : ", dataTable);
     document.getElementById("policyTypeInput").value = dataQuotationDetail.coverage_name; // ชื่อกรมธรรม์
     document.getElementById("productNameInput").value = dataQuotationDetail.title_masterplan; // ชื่อแผนประกัน
     document.getElementById("firstNameInput").value = dataTable.name; // ชื่อ
@@ -932,6 +937,7 @@ export async function loadData(dataQuotationDetail, dataTable) {
     document.getElementById("premiumIdHidden").value = dataTable.premiums_id; // ID เบี้ยประกันภัย
     document.getElementById("productCodeHidden").value = dataTable.tm_product_code; // รหัสแผนประกัน
     document.getElementById("companyCodeHidden").value = dataTable.company_code; // รหัสบริษัท
+    document.getElementById("companyNameHidden").value = dataTable.company_name; // ชื่อบริษัท
     document.getElementById("coverTypeHidden").value = dataTable.coverage_code; // ประเภทความคุ้มครอง
 
 }

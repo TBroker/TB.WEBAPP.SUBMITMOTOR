@@ -6,8 +6,8 @@ namespace TB.WEBAPP.SUBMITMOTOR.APPLICATION.Interfaces.CoreSystems.Motors
 {
     public interface ISubmitMotorUseCase
     {
-        Task<ApiResponseDto<List<MotorSubmitResponse>>> CreateSubmitMotor(MotorSubmitRequest request);
+        Task<ApiResponseDto<MotorSubmitResponse>> CreateSubmitMotor(MotorSubmitRequest request);
 
-        Task<ApiResponseDto<List<MotorSubmitResponse>>> CreateSubmitMotorUploadFile(MotorUploadFileRequest request);
+        Task<ApiResponseDto<MotorSubmitResponse>> CreateSubmitMotorUploadFile(MotorUploadFileRequest request);
     }
 }

@@ -15,6 +15,9 @@
     <link rel="icon" type="image/png" href="~/image/icon/tbroker.ico" sizes="32x32" asp-append-version="true">
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/TB.WEBAPP.SUBMITMOTOR.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/utility.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.22.0/dist/sweetalert2.min.css" integrity="sha256-NWFDlc+2O5YBqGykjREpkSKDMB6yEu5qPecoRrhcsC0=" crossorigin="anonymous">
 </head>
 <body>
     <content>
@@ -38,9 +41,9 @@
                         </span>
                         <div class="my-3">
                             <span class="form-label">ยอดเงินที่ต้องชำระ</span>
-                            <h3 class="text-success">5,000.00</h3>
+                            <h3 class="text-success">@ViewBag.Amount</h3>
                         </div>
-                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="paymentInstallmentHidden" value="@ViewBag.Token" />
                         <button type="button" id="paymentButton" class="btn btn-success w-100">ชำระเงิน</button>
                     </div>
                 </div>
@@ -48,6 +51,7 @@
         </form>
     </content>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script type="module" src="@Url.Content("~/js/helper/utility.js")" asp-append-version="true"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.22.0/dist/sweetalert2.all.min.js" integrity="sha256-WjwoxFTbs4JzyDmrHgK4VgR+Dz7he8HYwCbocAlNn9k=" crossorigin="anonymous"></script>
+    <script src="https://kit.fontawesome.com/1e32186682.js" crossorigin="anonymous"></script>
     <script type="module" src="@Url.Content("~/js/payment/installment/index.js")" asp-append-version="true"></script>
 </body>

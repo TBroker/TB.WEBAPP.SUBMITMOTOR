@@ -15,9 +15,15 @@ namespace TB.WEBAPP.SUBMITMOTOR.APPLICATION.UseCases.CreateFiles
             return result;
         }
 
-        public async Task<byte[]> CreateFileCoverNote(CreateFileCoverNoteRequest request)
+        public async Task<byte[]> CreateFileCoverNoteVoluntary(CreateFileCoverNoteRequest request)
         {
-            var result = await _apiClientService.PostFileAsync(_createFileService, $"api/create/file/notification/covernote", request);
+            var result = await _apiClientService.PostFileAsync(_createFileService, $"api/create/file/notification/covernote/voluntary", request);
+            return result;
+        }
+
+        public async Task<byte[]> CreateFileCoverNoteCompulsory(CreateFileCoverNoteRequest request)
+        {
+            var result = await _apiClientService.PostFileAsync(_createFileService, $"api/create/file/notification/covernote/compulsory", request);
             return result;
         }
     }

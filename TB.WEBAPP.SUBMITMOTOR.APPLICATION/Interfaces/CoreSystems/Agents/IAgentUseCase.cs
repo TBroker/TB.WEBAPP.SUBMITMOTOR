@@ -6,6 +6,6 @@ namespace TB.WEBAPP.SUBMITMOTOR.APPLICATION.Interfaces.CoreSystem.Agents
 {
     public interface IAgentUseCase
     {
-        Task<ApiResponseDto<List<AgentDetailResponse>>> FetchAgentDetail(AgentDetailRequest request);
+        Task<ApiResponseDto<IEnumerable<AgentDetailResponse>>> FetchAgentDetail(AgentDetailRequest request);
     }
 }

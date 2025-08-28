@@ -65,7 +65,7 @@
                             <div class="row">
                                 <label for="" class="col-lg-5 col-form-label fw-bold">ประเภทกรมธรรม์</label>
                                 <div class="col-lg-7">
-                                    <input type="text" readonly class="form-control-plaintext" id="policyTypeInput" placeholder="ประเภทกรมธรรม์" value="">
+                                    <input type="text" readonly class="form-control-plaintext" id="policyTypeInput" name="policyTypeInput" placeholder="ประเภทกรมธรรม์" value="">
                                 </div>
                             </div>
                         </div>
@@ -73,7 +73,7 @@
                             <div class="row">
                                 <label for="" class="col-lg-2 col-form-label fw-bold">ผลิตภัณฑ์</label>
                                 <div class="col-lg-10">
-                                    <input type="text" readonly class="form-control-plaintext" id="productNameInput" placeholder="ผลิตภัณฑ์" value="">
+                                    <input type="text" readonly class="form-control-plaintext" id="productNameInput" name="productNameInput" placeholder="ผลิตภัณฑ์" value="">
                                 </div>
                             </div>
                         </div>
@@ -1173,7 +1173,7 @@
                                                              data-bs-html="true"
                                                              data-bs-placement="bottom"
                                                              data-bs-title="<span class='fs-6'>ชำระเบี้ยที่ ที โบรคเกอร์</span>">
-                                                            <input type="radio" class="btn-check" name="channelPaymentOnlineRadio" id="qrCodeKBankRadio" autocomplete="off" checked>
+                                                            <input type="radio" class="btn-check" name="channelPaymentOnlineRadio" id="qrCodeKBankRadio" value="QR" autocomplete="off" checked>
                                                             <label class="btn btn-outline-secondary py-5 h-100" for="qrCodeKBankRadio">
                                                                 <i class="fa-solid fa-qrcode fa-2xl mb-4"></i><br />
                                                                 QR Code
@@ -1187,7 +1187,7 @@
                                                              data-bs-html="true"
                                                              data-bs-placement="bottom"
                                                              data-bs-title="<span class='fs-6'>ชำระเบี้ยที่ บริษัทประกัน</span>">
-                                                            <input type="radio" class="btn-check" name="channelPaymentOnlineRadio" id="creditCardT2PRadio" autocomplete="off">
+                                                            <input type="radio" class="btn-check" name="channelPaymentOnlineRadio" id="creditCardT2PRadio" value="PO" autocomplete="off">
                                                             <label class="btn btn-outline-secondary py-5 h-100" for="creditCardT2PRadio">
                                                                 <i class="fa-regular fa-credit-card fa-2xl mb-4"></i><br />
                                                                 Credit Card (T2P)
@@ -1319,6 +1319,7 @@
         <input type="hidden" id="premiumIdHidden" class="" name="premiumIdHidden" value="" />
         <input type="hidden" id="productCodeHidden" class="" name="productCodeHidden" value="" />
         <input type="hidden" id="companyCodeHidden" class="" name="companyCodeHidden" value="" />
+        <input type="hidden" id="companyNameHidden" class="" name="companyNameHidden" value="" />
         <input type="hidden" id="carRegisNoPreHidden" class="" name="carRegisNoPreHidden" value="" />
         <input type="hidden" id="carRegisNoHidden" class="" name="carRegisNoHidden" value="" />
         <input type="hidden" id="coverTypeHidden" class="" name="coverTypeHidden" value="" />

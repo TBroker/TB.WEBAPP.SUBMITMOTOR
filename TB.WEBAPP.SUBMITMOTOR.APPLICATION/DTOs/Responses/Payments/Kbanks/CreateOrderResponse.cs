@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace TB.WEBAPP.SUBMITMOTOR.APPLICATION.DTOs.Responses.Payments.Kbanks
+namespace TB.WEBAPP.SUBMITMOTOR.APPLICATION.DTOs.Responses.Payments.KBanks
 {
     public class CreateOrderResponse
     {

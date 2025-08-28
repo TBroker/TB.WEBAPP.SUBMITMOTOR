@@ -1,18 +1,18 @@
 ﻿using TB.WEBAPP.SUBMITMOTOR.APPLICATION.DTOs;
-using TB.WEBAPP.SUBMITMOTOR.APPLICATION.DTOs.Responses.Datas.Verifies;
+using TB.WEBAPP.SUBMITMOTOR.APPLICATION.DTOs.Responses.Data.Verifies;
 using TB.WEBAPP.SUBMITMOTOR.APPLICATION.Interfaces;
-using TB.WEBAPP.SUBMITMOTOR.APPLICATION.Interfaces.Datas.Verifies;
+using TB.WEBAPP.SUBMITMOTOR.APPLICATION.Interfaces.Data.Verifies;
 
-namespace TB.WEBAPP.SUBMITMOTOR.APPLICATION.UseCases.Datas.Verifies
+namespace TB.WEBAPP.SUBMITMOTOR.APPLICATION.UseCases.Data.Verifies
 {
     public class VerifyUseCase(IApiClientService apiClientService) : IVerifyUseCase
     {
         private readonly IApiClientService _apiClientService = apiClientService;
         private readonly string _serviceName = "DataService";
 
-        public async Task<ApiResponseDto<IEnumerable<bool>>> CreateVerifyOtp(WebVerifyOtp request)
+        public async Task<ApiResponseDto<bool>> CreateVerifyOtp(WebVerifyOtp request)
         {
-            var result = await _apiClientService.PostAsync<WebVerifyOtp, IEnumerable<bool>>(_serviceName, "/api/verify/create/otp", request);
+            var result = await _apiClientService.PostAsync<WebVerifyOtp, bool>(_serviceName, "/api/verify/create/otp", request);
             return result;
         }
 
@@ -28,15 +28,15 @@ namespace TB.WEBAPP.SUBMITMOTOR.APPLICATION.UseCases.Datas.Verifies
             return result;
         }
 
-        public async Task<ApiResponseDto<IEnumerable<bool>>> ModifyVerifyOtp(WebVerifyOtp request)
+        public async Task<ApiResponseDto<bool>> ModifyVerifyOtp(WebVerifyOtp request)
         {
-            var result = await _apiClientService.PostAsync<WebVerifyOtp, IEnumerable<bool>>(_serviceName, "/api/verify/modify/otp", request);
+            var result = await _apiClientService.PostAsync<WebVerifyOtp, bool>(_serviceName, "/api/verify/modify/otp", request);
             return result;
         }
 
-        public async Task<ApiResponseDto<IEnumerable<bool>>> RemoveVerifyOtp(WebVerifyOtp request)
+        public async Task<ApiResponseDto<bool>> RemoveVerifyOtp(WebVerifyOtp request)
         {
-            var result = await _apiClientService.PostAsync<WebVerifyOtp, IEnumerable<bool>>(_serviceName, "/api/verify/remove/otp", request);
+            var result = await _apiClientService.PostAsync<WebVerifyOtp, bool>(_serviceName, "/api/verify/remove/otp", request);
             return result;
         }
     }

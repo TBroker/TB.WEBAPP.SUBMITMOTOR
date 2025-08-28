@@ -413,5 +413,11 @@ namespace TB.WEBAPP.SUBMITMOTOR.APPLICATION.DTOs.Requests.CoreSystems.Motors
 
         [JsonPropertyName("DRV5_CONSENT")]
         public string? Driver5Consent { get; set; }
+
+        [JsonPropertyName("INS_RELATION_PHONE")]
+        public string? InsureRelationPhoneNumber { get; set; }
+
+        [JsonPropertyName("INS_RELATIONSHIPS")]
+        public string? InsureRelationShips { get; set; }
     }
 }

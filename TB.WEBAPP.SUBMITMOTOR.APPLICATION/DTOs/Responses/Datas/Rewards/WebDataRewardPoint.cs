@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace TB.WEBAPP.SUBMITMOTOR.APPLICATION.DTOs.Responses.Datas.Rewards
+namespace TB.WEBAPP.SUBMITMOTOR.APPLICATION.DTOs.Responses.Data.Rewards
 {
     public class WebDataRewardPoint
     {

@@ -6,6 +6,6 @@ namespace TB.WEBAPP.SUBMITMOTOR.APPLICATION.Interfaces.CoreSystems.Installments
 {
     public interface IInstallmentUseCase
     {  
-        Task<ApiResponseDto<List<InstallmentCalculatePeriodResponse>>> FetchCalculatePeriod(InstallmentCalculatePeriodRequest request);
+        Task<ApiResponseDto<IEnumerable<InstallmentCalculatePeriodResponse>>> FetchCalculatePeriod(InstallmentCalculatePeriodRequest request);
     }
 }

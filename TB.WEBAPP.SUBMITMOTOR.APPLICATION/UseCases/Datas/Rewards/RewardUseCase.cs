@@ -1,9 +1,9 @@
 ﻿using TB.WEBAPP.SUBMITMOTOR.APPLICATION.DTOs;
-using TB.WEBAPP.SUBMITMOTOR.APPLICATION.DTOs.Responses.Datas.Rewards;
+using TB.WEBAPP.SUBMITMOTOR.APPLICATION.DTOs.Responses.Data.Rewards;
 using TB.WEBAPP.SUBMITMOTOR.APPLICATION.Interfaces;
-using TB.WEBAPP.SUBMITMOTOR.APPLICATION.Interfaces.Datas.Rewards;
+using TB.WEBAPP.SUBMITMOTOR.APPLICATION.Interfaces.Data.Rewards;
 
-namespace TB.WEBAPP.SUBMITMOTOR.APPLICATION.UseCases.Datas.Rewards
+namespace TB.WEBAPP.SUBMITMOTOR.APPLICATION.UseCases.Data.Rewards
 {
     public class RewardUseCase(IApiClientService apiClientService) : IRewardUesCase
     {

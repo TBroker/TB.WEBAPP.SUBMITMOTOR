@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using System.Net;
 using System.Text;
 using System.Text.Json;
 using TB.WEBAPP.SUBMITMOTOR.APPLICATION.DTOs;
@@ -15,7 +16,7 @@ namespace TB.WEBAPP.SUBMITMOTOR.APPLICATION.Services
         {
             try
             {
-                var client = _httpClientFactory.CreateClient(clientName);
+                var client = _httpClientFactory.CreateClient(clientName);                
                 var response = await client.GetAsync(endpoint);
                 var content = await response.Content.ReadAsStringAsync();
 
@@ -43,7 +44,7 @@ namespace TB.WEBAPP.SUBMITMOTOR.APPLICATION.Services
                 var json = JsonSerializer.Serialize(request);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
                 var response = await client.PostAsync(endpoint, content);
-                var responseContent = await response.Content.ReadAsStringAsync();
+                var responseContent = await response.Content.ReadAsStringAsync();                
 
                 var options = new JsonSerializerOptions
                 {

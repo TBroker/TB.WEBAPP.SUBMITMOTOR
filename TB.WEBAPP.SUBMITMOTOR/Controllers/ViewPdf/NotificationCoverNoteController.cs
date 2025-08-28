@@ -13,14 +13,33 @@ namespace TB.WEBAPP.SUBMITMOTOR.Controllers.ViewPdf
             return View();
         }
 
-        public async Task<IActionResult> ContactInstallment()
+        public async Task<IActionResult> Voluntary()
         {
-            var pdfBytes = await _createFileUseCase.CreateFileCoverNote(
-                new CreateFileCoverNoteRequest
-                {
-                    IsPassword = false,
-                    ReportId = 1,
-                });
+            var transactionId = "C1584793-FD70-4501-A8C4-CB12AFDD62EF";//TempData["transaction_id"]!.ToString();
+
+            var pdfBytes = await _createFileUseCase.CreateFileCoverNoteVoluntary(
+               new CreateFileCoverNoteRequest
+               {
+                   IsPassword = true,
+                   TransactionId = transactionId ?? "",
+               });
+
+            var base64Pdf = Convert.ToBase64String(pdfBytes);
+            ViewBag.PdfData = base64Pdf;
+            return View();
+        }
+
+        public async Task<IActionResult> Compulsory()
+        {
+            var transactionId = "C1584793-FD70-4501-A8C4-CB12AFDD62EF";//TempData["transaction_id"]!.ToString();
+
+            var pdfBytes = await _createFileUseCase.CreateFileCoverNoteCompulsory(
+               new CreateFileCoverNoteRequest
+               {
+                   IsPassword = true,
+                   TransactionId = transactionId ?? "",
+               });
+
             var base64Pdf = Convert.ToBase64String(pdfBytes);
             ViewBag.PdfData = base64Pdf;
             return View();

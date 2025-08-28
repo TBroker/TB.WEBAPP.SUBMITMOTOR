@@ -11,15 +11,15 @@ namespace TB.WEBAPP.SUBMITMOTOR.APPLICATION.UseCases.CoreSystems.Motors
         private readonly IApiClientService _apiClientService = apiClientService;
         private readonly string _coreSystemService = "CoreSystemService";
 
-        public async Task<ApiResponseDto<List<MotorSubmitResponse>>> CreateSubmitMotor(MotorSubmitRequest request)
+        public async Task<ApiResponseDto<MotorSubmitResponse>> CreateSubmitMotor(MotorSubmitRequest request)
         {
-            var result = await _apiClientService.PostAsync<MotorSubmitRequest, List<MotorSubmitResponse>>(_coreSystemService, "/api/motor/submit/motor", request);
+            var result = await _apiClientService.PostAsync<MotorSubmitRequest, MotorSubmitResponse>(_coreSystemService, "/api/motor/submit/motor", request);
             return result;
         }
 
-        public async Task<ApiResponseDto<List<MotorSubmitResponse>>> CreateSubmitMotorUploadFile(MotorUploadFileRequest request)
+        public async Task<ApiResponseDto<MotorSubmitResponse>> CreateSubmitMotorUploadFile(MotorUploadFileRequest request)
         {
-            var result = await _apiClientService.PostAsync<MotorUploadFileRequest, List<MotorSubmitResponse>>(_coreSystemService, "/api/motor/submit/motor/upload", request);
+            var result = await _apiClientService.PostAsync<MotorUploadFileRequest, MotorSubmitResponse>(_coreSystemService, "/api/motor/submit/motor/upload", request);
             return result;
         }
     }

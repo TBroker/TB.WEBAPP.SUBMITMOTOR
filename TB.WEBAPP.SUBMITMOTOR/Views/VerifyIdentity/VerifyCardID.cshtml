@@ -3,59 +3,43 @@
 *@
 @{
     ViewData["Title"] = "ยืนยันตัวตน";
-    Layout = null;
+    Layout = "_LayoutDefault";
 }
 
-<head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - T Broker</title>
-
-    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Prompt" asp-append-version="true">
-    <link rel="icon" type="image/png" href="~/image/icon/tbroker.ico" sizes="32x32" asp-append-version="true">
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/TB.WEBAPP.SUBMITMOTOR.styles.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/utility.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/css/pageloader.css" asp-append-version="true" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.22.0/dist/sweetalert2.min.css" integrity="sha256-NWFDlc+2O5YBqGykjREpkSKDMB6yEu5qPecoRrhcsC0=" crossorigin="anonymous">
-
-</head>
-<body>
-    <content>
-        <div class="d-flex justify-content-center align-items-center vh-100">
-            <div class="card shadow p-4" style="width: 26rem;">
-                <div class="card-body text-center">
-                    <div class="row justify-content-center mb-3">
-                        <div class="col-auto w-100">
-                            <img src="/image/logo-company/tbroker_header.png" class="rounded img-fluid" alt="T Broker Logo" asp-append-version="true" />
-                        </div>
+<content>
+    <div class="d-flex justify-content-center align-items-center vh-100 animate__animated animate__fadeInDown">
+        <div class="card shadow p-4" style="width: 26rem;">
+            <div class="card-body text-center">
+                <div class="row justify-content-center mb-3">
+                    <div class="col-auto w-100">
+                        <img src="/image/logo-company/tbroker_header.png" class="rounded img-fluid" alt="T Broker Logo" asp-append-version="true" />
                     </div>
-                    <h5 class="card-title mb-3">การยืนยันตัวตน</h5>
-                    <p class="text-muted">
-                        กรุณากรอกเลขประจำตัวประชาชน 13 หลักของท่านเพื่อดำเนินการตรวจสอบและยืนยันตัวตนในระบบ<br>
-                        ข้อมูลของท่านจะถูกเก็บรักษาอย่างปลอดภัยและไม่เปิดเผยแก่บุคคลภายนอก
-                    </p>
+                </div>
+                <h5 class="card-title mb-3">การยืนยันตัวตน</h5>
+                <p class="text-muted">
+                    กรุณากรอกเลขประจำตัวประชาชน 13 หลักของท่านเพื่อดำเนินการตรวจสอบและยืนยันตัวตนในระบบ<br>
+                    ข้อมูลของท่านจะถูกเก็บรักษาอย่างปลอดภัยและไม่เปิดเผยแก่บุคคลภายนอก
+                </p>
 
-                    <form id="verifyEmailForm" method="POST" asp-controller="" asp-action="" autocomplete="off">
-                        @Html.AntiForgeryToken()
-                        <div class="mb-3">
-                            <input type="text" class="form-control text-center numberOnly" maxlength="13" pattern="\d{13}" id="verifyCardIdInput" name="verifyCardIdInput" required placeholder="กรอกเลขประจำตัวประชาชน 13 หลัก">
-                        </div>
-                        <input type="hidden" id="verifyCardIdHidden" name="verifyCardIdHidden" value="@ViewBag.Token" />
-                        <button type="button" id="verifyCardIdButton" class="btn btn-primary w-100">ดำเนินการต่อ</button>
-                    </form>
-
-                    <div class="mt-3">
-                        <small class="text-muted">
-                            * การกรอกข้อมูลให้ถูกต้องครบถ้วน จะช่วยให้การตรวจสอบเสร็จสมบูรณ์อย่างรวดเร็ว
-                        </small>
+                <form id="verifyEmailForm" method="POST" asp-controller="" asp-action="" autocomplete="off">
+                    @Html.AntiForgeryToken()
+                    <div class="mb-3">
+                        <input type="text" class="form-control text-center numberOnly" maxlength="13" pattern="\d{13}" id="verifyCardIdInput" name="verifyCardIdInput" required placeholder="กรอกเลขประจำตัวประชาชน 13 หลัก">
                     </div>
+                    <input type="hidden" id="verifyCardIdHidden" name="verifyCardIdHidden" value="@ViewBag.Token" />
+                    <button type="button" id="verifyCardIdButton" class="btn btn-primary w-100">ดำเนินการต่อ</button>
+                </form>
+
+                <div class="mt-3">
+                    <small class="text-muted">
+                        * การกรอกข้อมูลให้ถูกต้องครบถ้วน จะช่วยให้การตรวจสอบเสร็จสมบูรณ์อย่างรวดเร็ว
+                    </small>
                 </div>
             </div>
         </div>
-    </content>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.22.0/dist/sweetalert2.all.min.js" integrity="sha256-WjwoxFTbs4JzyDmrHgK4VgR+Dz7he8HYwCbocAlNn9k=" crossorigin="anonymous"></script>
-    <script type="module" src="@Url.Content("~/js/helper/utility.js")" asp-append-version="true"></script>
+    </div>
+</content>
+
+@section Scripts {
     <script type="module" src="@Url.Content("~/js/verify/email/index.js")" asp-append-version="true"></script>
-</body>
+}

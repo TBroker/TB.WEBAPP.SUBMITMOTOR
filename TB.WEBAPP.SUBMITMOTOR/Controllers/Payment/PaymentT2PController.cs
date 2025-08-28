@@ -4,7 +4,7 @@ namespace TB.WEBAPP.SUBMITMOTOR.Controllers.Payment
 {
     public class PaymentT2PController : Controller
     {
-        public IActionResult Index()
+        public IActionResult PaymentCreditCard()
         {
             return View();
         }

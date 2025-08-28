@@ -2,7 +2,7 @@
 {
     public class CreateFileCoverNoteRequest
     {
-        public int ReportId { get; set; }
+        public string TransactionId { get; set; } = string.Empty;
         public bool IsPassword { get; set; } = false;
     }
 }

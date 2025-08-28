@@ -1,9 +1,9 @@
 ﻿import * as Alerts from "../../helper/alert.js";
-import * as PageLoaders from '../../helper/pageLoader.js';
-import * as Utils from "../../helper/utility.js";
 import * as ApiCores from "../../service/apiCores.js";
 import * as ApiDatas from "../../service/apiDatas.js";
 import * as Doms from "./dom.js";
+import * as PageLoaders from '../../helper/pageLoader.js';
+import * as Utils from "../../helper/utility.js";
 
 // Event: ฟอร์มค้นหาใบเสนอราคา
 export async function inintSearchQuotation() {
@@ -23,6 +23,9 @@ export async function initCustomerForm() {
         radio.addEventListener("change", async function () {
             await Doms.loadPrenameOptions(this.value);
             Doms.handleRadioCustomerChange();
+            const element = document.getElementById("installmentPeriodSelect");
+            const changeEvent = new Event('change', { bubbles: true });
+            element.dispatchEvent(changeEvent);
         });
     });
 
@@ -425,22 +428,22 @@ export async function initOrderMotorDataTables(tableEl, tableInstance) {
                 return;
             }
 
-            //// ดึงข้อมูลแผนหลักและรายละเอียดใบเสนอราคา
-            //const inquiryMasterPlanResult = await ApiDatas.fetchMasterPlanDetails({
-            //    company_code: dataTable.company_code, // รหัสบริษัท
-            //    tm_product_code: dataTable.tm_product_code, // รหัสผลิตภัณฑ์
-            //    coverage_code: dataTable.coverage_code // รหัสความคุ้มครอง
-            //});
+            // ดึงข้อมูลแผนหลักและรายละเอียดใบเสนอราคา
+            const inquiryMasterPlanResult = await ApiDatas.fetchMasterPlanDetails({
+                company_code: dataTable.company_code, // รหัสบริษัท
+                tm_product_code: dataTable.tm_product_code, // รหัสผลิตภัณฑ์
+                coverage_code: dataTable.coverage_code // รหัสความคุ้มครอง
+            });
 
-            //if (inquiryMasterPlanResult.data !== null) {
-            //    await PageLoaders.pageLoadFadeOutModern(500);
-            //    await Alert.showAlert(new Object({
-            //        icon: `warning`,
-            //        title: `<h5>ไม่พบข้อมูลแผนหลักและรายละเอียดใบเสนอราคา</h5> <br> <h4><b>${dataTable.quo_number}</b></h4>`,
-            //        text: `<span class="text-danger">กรุณาตรวจสอบข้อมูล</div>`,
-            //    }));
-            //    return;
-            //}
+            if (inquiryMasterPlanResult.data == null) {
+                await PageLoaders.pageLoadFadeOutModern(500);
+                await Alerts.showAlert(new Object({
+                    icon: `warning`,
+                    title: `<h5>ไม่พบข้อมูลแผนหลักและรายละเอียดใบเสนอราคา</h5> <br> <h4><b>${dataTable.quo_number}</b></h4>`,
+                    text: `<span class="text-danger">กรุณาตรวจสอบข้อมูล</div>`,
+                }));
+                return;
+            }
 
             // ถ้าไม่พบแผนหลัก ให้แสดงข้อความเตือน
             const inquiryQuotatuinDetailResult = await ApiDatas.fetchQuotationReportDetail({
@@ -495,38 +498,37 @@ export async function initSubmitMotor() {
 
         const button = this;
         const form = document.getElementById('newMotorSubmitForm');
-        //const messageDiv = document.getElementById('messageDiv');
-
-        // ตรวจสอบข้อมูลก่อนส่ง
-        //if (!validateForm(form)) {
-        //    //messageDiv.className = 'alert alert-danger mt-3';
-        //    //messageDiv.textContent = 'กรุณากรอกข้อมูลที่จำเป็นให้ครบถ้วน';
-        //    //messageDiv.style.display = 'block';
-        //    return;
-        //}
 
         // แสดง loading
         button.disabled = true;
         button.innerHTML = '<span class="spinner-border spinner-border-sm"></span> กำลังบันทึก...';
 
-        const selectElement = document.getElementById("vehicleCodeSelect");
-        const selectedOption = selectElement.options[selectElement.selectedIndex];
-        const carSeat = selectedOption.getAttribute("seat");
-        const subInsureType = selectedOption.getAttribute("cmi");
-
-        console.log(carSeat);
-        console.log(subInsureType);
-
-        const preNameTitleSelect = document.getElementById("preNameTitleSelect");
-        const preNameSelectOption = preNameTitleSelect.options[selectElement.selectedIndex];
+        const vehicleCodeSelect = document.getElementById("vehicleCodeSelect");
+        const vehicleCodeSelectedOption = vehicleCodeSelect.options[vehicleCodeSelect.selectedIndex];
+        const carSeat = vehicleCodeSelectedOption.getAttribute("seat");
+        const subInsureType = vehicleCodeSelectedOption.getAttribute("cmi");
+        const preNameTitleSelect2 = document.getElementById("preNameTitleSelect");
+        const preNameSelectOption = preNameTitleSelect2.options[preNameTitleSelect2.selectedIndex];
         const customerGender = preNameSelectOption.getAttribute("gender");
-
         const beneficiaryPrefixSelect = document.getElementById("beneficiaryPrefixSelect");
-        const beneficiarySelectOption = beneficiaryPrefixSelect.options[selectElement.selectedIndex];
-        const beneficiaryPreNameText = beneficiarySelectOption.text;
+        const beneficiarySelectOption = beneficiaryPrefixSelect.options[beneficiaryPrefixSelect.selectedIndex].text;
+        const preNameTitleSelect = document.getElementById("preNameTitleSelect");
+        const preNameTitleSelectedText = preNameTitleSelect.options[preNameTitleSelect.selectedIndex].text;
+        const customerAddressNoInput = document.getElementById("customerAddressNoInput").value;
+        const customerAddressProvinceSelect = document.getElementById("customerAddressProvinceSelect");
+        const customerAddressProvinceSelectedText = customerAddressProvinceSelect.options[customerAddressProvinceSelect.selectedIndex].text;
+        const customerAddressDistrictSelect = document.getElementById("customerAddressDistrictSelect");
+        const customerAddressDistrictSelectedText = customerAddressDistrictSelect.options[customerAddressDistrictSelect.selectedIndex].text;
+        const customerAddressSubDistrictSelect = document.getElementById("customerAddressSubDistrictSelect");
+        const customerAddressSubDistrictSelectedText = customerAddressSubDistrictSelect.options[customerAddressSubDistrictSelect.selectedIndex].text;
+        const customerAddressZipCodeInput = document.getElementById("customerAddressZipCodeInput").value;
+        const registrationCarProvinceSelect = document.getElementById("registrationCarProvinceSelect");
+        const registrationCarProvinceSelectText = registrationCarProvinceSelect.options[registrationCarProvinceSelect.selectedIndex].text;
 
-        console.log(customerGender);
-        console.log(beneficiaryPreNameText);
+        const carBrandSelect = document.getElementById("carBrandSelect");
+        const carBrandSelectText = carBrandSelect.options[carBrandSelect.selectedIndex].text;
+        const carModelSelect = document.getElementById("carModelSelect");
+        const carModelSelectText = carModelSelect.options[carModelSelect.selectedIndex].text;
 
         // รวบรวมข้อมูลทั้งหมดจาก form
         const formData = new FormData(form);
@@ -534,38 +536,45 @@ export async function initSubmitMotor() {
         // เพิ่มข้อมูลเพิ่มเติม (ถ้าต้องการ)
         formData.append('carSeat', carSeat);
         formData.append('customerGender', customerGender);
-        formData.append('prefixBeneficiary', beneficiaryPreNameText);
+        formData.append('prefixBeneficiary', beneficiarySelectOption);
         formData.append('subInsureTypeCompulsory', subInsureType);
+        formData.append('preNameTitle', preNameTitleSelectedText);
+        formData.append('CarProvince', registrationCarProvinceSelectText);
+        formData.append('Address', `${customerAddressNoInput} ${customerAddressSubDistrictSelectedText} ${customerAddressDistrictSelectedText} ${customerAddressProvinceSelectedText} ${customerAddressZipCodeInput}`);
+        formData.append('CarBrand', carBrandSelectText);
+        formData.append('CarModel', carModelSelectText);
 
         fetch('/SubmitMotorNew/SubmitMotor', {
             method: 'POST',
             body: formData
         })
             .then(response => response.json())
-            .then(data => {
-                console.log(data);
-                //if (data.success) {
-                //    messageDiv.className = 'alert alert-success mt-3';
-                //    messageDiv.innerHTML = `
-                //    <strong>สำเร็จ!</strong> ${data.message}<br>
-                //    <small>บันทึกข้อมูลทั้งหมด ${data.data.totalFields} ฟิลด์</small>
-                //`;
+            .then(async data => {
+                await PageLoaders.pageLoadFadeOutModern(500);
+                if (data.success) {
+                    let result = await Alerts.showConfirmationDialog(new Object({
+                        title: 'แจ้งเตือน',
+                        text: `<span>${data.message}</span>`,
+                        icon: 'warning',
+                        confirmButtonText: 'ตกลง',
+                        denyButtonText: 'ยกเลิก',
+                    }));
 
-                //    // ล้างข้อมูลหลังบันทึกสำเร็จ (ถ้าต้องการ)
-                //    // form.reset();
-                //} else {
-                //    messageDiv.className = 'alert alert-danger mt-3';
-                //    messageDiv.innerHTML = `<strong>เกิดข้อผิดพลาด!</strong> ${data.message}`;
-                //}
-                //messageDiv.style.display = 'block';
+                    if (result.isConfirmed && data.channel && data.channel.trim() !== '') {
+                        const channel = data.channel.trim();
+                        return window.location.href = channel;
+                    }
+                }
 
-                //// เลื่อนไปที่ message
-                //messageDiv.scrollIntoView({ behavior: 'smooth' });
+                await Alerts.showAlert(new Object({
+                    icon: `warning`,
+                    title: `แจ้งเตือน`,
+                    text: `<span class="text-danger">${data.message}</div>`,
+                }));
             })
-            .catch(error => {
-                //messageDiv.className = 'alert alert-danger mt-3';
-                //messageDiv.innerHTML = '<strong>เกิดข้อผิดพลาด!</strong> ไม่สามารถส่งข้อมูลได้';
-                //messageDiv.style.display = 'block';
+            .catch(async error => {
+                button.disabled = false;
+                button.innerHTML = '<i class="fa-solid fa-check fa-xl"></i> <span>แจ้งงาน</span>';
                 console.error('Error:', error);
             })
             .finally(async () => {
@@ -574,64 +583,4 @@ export async function initSubmitMotor() {
                 button.innerHTML = '<i class="fa-solid fa-check fa-xl"></i> <span>แจ้งงาน</span>';
             });
     });
-
-    //document.getElementById('dataForm').addEventListener('submit', function (e) {
-    //    e.preventDefault();
-
-    //    const formData = new FormData(this);
-    //    const data = Object.fromEntries(formData);
-
-    //    fetch('/SubmitMotor/SubmitMotorNew/SubmitMotor', {
-    //        method: 'POST',
-    //        headers: {
-    //            'Content-Type': 'application/json',
-    //        },
-    //        body: JSON.stringify(data)
-    //    })
-    //        .then(response => response.json())
-    //        .then(data => {
-    //            // handle response
-    //        });
-    //});
-
-    //document.getElementById('formNewMotorSubmit').addEventListener('submit', function (e) {
-    //    const submitBtn = this.querySelector('button[type="submit"]');
-
-    //    e.preventDefault();
-
-    //    //if (submitBtn.disabled) {
-    //    //    e.preventDefault();
-    //    //    return;
-    //    //}
-
-    //    submitBtn.disabled = true;
-    //    submitBtn.textContent = 'กำลังส่ง...';
-
-    //    // หลังจากส่งข้อมูลเสร็จ
-    //    setTimeout(() => {
-    //        submitBtn.disabled = false;
-    //        submitBtn.textContent = 'ส่งข้อมูล';
-    //    }, 2000);
-    //});
-
-    //const form = document.getElementById("userForm");
-
-    //form.addEventListener("submit", async (e) => {
-    //    e.preventDefault();
-
-    //    const response = await fetch("/SubmitMotor/SubmitMotorNew/SubmitMotor", {
-    //        method: "POST",
-    //        headers: {
-    //            "Content-Type": "application/json",
-    //        },
-    //        body: JSON.stringify({ email }),
-    //    });
-
-    //    const result = await response.json();
-    //    if (result.success) {
-    //        alert("User saved successfully");
-    //    } else {
-    //        alert(result.message);
-    //    }
-    //});
 }

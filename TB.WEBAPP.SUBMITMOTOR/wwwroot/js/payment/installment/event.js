@@ -1,4 +1,6 @@
-﻿export async function initSubmitConfrim() {
+﻿import * as Alerts from "../../helper/alert.js"
+
+export async function initSubmitConfrim() {
     document.getElementById('paymentButton').addEventListener('click', async function () {
         const button = this;
         const form = document.getElementById('paymentInstallment');
@@ -10,44 +12,38 @@
         // รวบรวมข้อมูลทั้งหมดจาก form
         const formData = new FormData(form);
 
-        fetch('/PaymentInstallment/ConFirmPaymentInstallment', {
+        fetch('/PaymentInstallment/ConfirmPaymentInstallment', {
             method: 'POST',
             body: formData
         })
             .then(response => response.json())
-            .then(result => {
+            .then(async result => {
                 console.log(result);
-
                 if (result.success) {
-                    // Redirect ไปยังหน้า View PDF พร้อมส่ง id
-                    const id = 1; // ปรับตามชื่อ field ที่ API ส่งกลับ
-                    window.location.href = `/PaymentKBank/PaymentQRCode`;
-                } else {
-                    alert(`เกิดข้อผิดพลาด: ${result.message}`);
+                    await Alerts.showAlertAndRedirect(new Object({
+                        title: 'แจ้งเตือน',
+                        html: `<p>${result.message}</p>`,
+                        icon: 'question',
+                        url: `/PaymentKBank/PaymentQRCodeInstallment`,
+                        confirmButtonText: 'ตกลง'
+                    }));
+                    return;
                 }
 
-                //if (data.success) {
-                //    messageDiv.className = 'alert alert-success mt-3';
-                //    messageDiv.innerHTML = `
-                //    <strong>สำเร็จ!</strong> ${data.message}<br>
-                //    <small>บันทึกข้อมูลทั้งหมด ${data.data.totalFields} ฟิลด์</small>
-                //`;
-
-                //    // ล้างข้อมูลหลังบันทึกสำเร็จ (ถ้าต้องการ)
-                //    // form.reset();
-                //} else {
-                //    messageDiv.className = 'alert alert-danger mt-3';
-                //    messageDiv.innerHTML = `<strong>เกิดข้อผิดพลาด!</strong> ${data.message}`;
-                //}
-                //messageDiv.style.display = 'block';
-
-                //// เลื่อนไปที่ message
-                //messageDiv.scrollIntoView({ behavior: 'smooth' });
+                await Alerts.showAlert(new Object({
+                    icon: `warning`,
+                    title: `<h5>แจ้งเตือน</h4>`,
+                    text: `<span class="text-danger">${result.message}</div>`,
+                }));
             })
-            .catch(error => {
-                //messageDiv.className = 'alert alert-danger mt-3';
-                //messageDiv.innerHTML = '<strong>เกิดข้อผิดพลาด!</strong> ไม่สามารถส่งข้อมูลได้';
-                //messageDiv.style.display = 'block';
+            .catch(async error => {
+                await Alerts.showAlert(new Object({
+                    icon: `error`,
+                    title: `<h5>พบปัญหา</h4>`,
+                    text: `<span class="text-danger">${error}</div>`,
+                }));
+                button.disabled = false;
+                button.innerHTML = '<span>ชำระเงิน</span>';
                 console.error('Error:', error);
             })
             .finally(async () => {

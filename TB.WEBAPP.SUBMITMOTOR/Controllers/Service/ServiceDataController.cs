@@ -1,24 +1,40 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using TB.WEBAPP.SUBMITMOTOR.APPLICATION.DTOs.Requests.Datas.Premiums;
-using TB.WEBAPP.SUBMITMOTOR.APPLICATION.DTOs.Requests.Datas.Reports;
-using TB.WEBAPP.SUBMITMOTOR.APPLICATION.Interfaces.Datas.Premiums;
-using TB.WEBAPP.SUBMITMOTOR.APPLICATION.Interfaces.Datas.Reports;
-using TB.WEBAPP.SUBMITMOTOR.APPLICATION.Interfaces.Datas.Rewards;
+using TB.WEBAPP.SUBMITMOTOR.APPLICATION.DTOs.Requests.Data.Premiums;
+using TB.WEBAPP.SUBMITMOTOR.APPLICATION.DTOs.Requests.Data.Reports;
+using TB.WEBAPP.SUBMITMOTOR.APPLICATION.Interfaces;
+using TB.WEBAPP.SUBMITMOTOR.APPLICATION.Interfaces.Data.Premiums;
+using TB.WEBAPP.SUBMITMOTOR.APPLICATION.Interfaces.Data.Reports;
+using TB.WEBAPP.SUBMITMOTOR.APPLICATION.Interfaces.Data.Rewards;
 
 namespace TB.WEBAPP.SUBMITMOTOR.Controllers.Service
 {
     [Route("api/data/reports/")]
     [ApiController]
-    public class ReportDataController(IReportUseCase getReportUseCase) : ControllerBase
+    public class ReportDataController(
+        IReportUseCase getReportUseCase
+        , IJwtReaderService jwtReaderService) : ControllerBase
     {
         private readonly IReportUseCase _getReportUseCase = getReportUseCase;
+        private readonly IJwtReaderService _jwtReaderService = jwtReaderService;
 
         [HttpPost]
         [Route("fetch/quotation/motor")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> FetchQuotationReportList([FromBody] QuotationListRequest request)
         {
-            request.UserId = "2051072"; // Example user ID, replace with actual logic to get user ID
+            var agentCookies = Request.Cookies["AgentAuth"];
+            if (string.IsNullOrEmpty(agentCookies))
+            {
+                return BadRequest("Invalid agent information.");
+            }
+
+            var agentInfo = _jwtReaderService.ReadAgentInfo(agentCookies);
+            if (agentInfo == null)
+            {
+                return BadRequest("Invalid agent information.");
+            }
+
+            request.UserId = agentInfo.Value.AgentCode; // Example user ID, replace with actual logic to get user ID
             var response = await _getReportUseCase.FetchQuotationReportList(request);
             return Ok(response);
         }
@@ -51,16 +67,30 @@ namespace TB.WEBAPP.SUBMITMOTOR.Controllers.Service
 
     [Route("api/data/rewards/")]
     [ApiController]
-    public class RewardDataController(IRewardUesCase rewardUesCase) : ControllerBase
+    public class RewardDataController(IRewardUesCase rewardUesCase
+        , IJwtReaderService jwtReaderService) : ControllerBase
     {
         private readonly IRewardUesCase _rewardUesCase = rewardUesCase;
+        private readonly IJwtReaderService _jwtReaderService = jwtReaderService;
 
         [HttpPost]
         [Route("fetch/point")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> FetchRewardPointAsync()
         {
-            var UserId = "2051072"; // Example user ID, replace with actual logic to get user ID
+            var agentCookies = Request.Cookies["AgentAuth"];
+            if (string.IsNullOrEmpty(agentCookies))
+            {
+                return BadRequest("Invalid agent information.");
+            }
+
+            var agentInfo =  _jwtReaderService.ReadAgentInfo(agentCookies);
+            if (agentInfo == null)
+            {
+                return BadRequest("Invalid agent information.");
+            }
+
+            var UserId = agentInfo.Value.AgentCode; // Example user ID, replace with actual logic to get user ID
             var response = await _rewardUesCase.FetchRewardPointAsync(UserId);
             return Ok(response);
         }

@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace TB.WEBAPP.SUBMITMOTOR.APPLICATION.DTOs.Responses.Datas.Reports
+namespace TB.WEBAPP.SUBMITMOTOR.APPLICATION.DTOs.Responses.Data.Reports
 {
     public class QuotationDetailResponse
     {
@@ -27,6 +27,9 @@ namespace TB.WEBAPP.SUBMITMOTOR.APPLICATION.DTOs.Responses.Datas.Reports
 
         [JsonPropertyName("company_code")]
         public string? CompanyCode { get; set; }
+
+        [JsonPropertyName("company_name")]
+        public string? CompanyName { get; set; }
 
         [JsonPropertyName("coverage_code")]
         public string? CoverageCode { get; set; }

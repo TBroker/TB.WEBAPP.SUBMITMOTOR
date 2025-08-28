@@ -1,0 +1,40 @@
+﻿@{
+    ViewBag.Title = "เอกสารยืนยันการรับแจ้งประกัน";
+    Layout = "_LayoutDefault"; // ปรับตาม layout ที่คุณใช้
+}
+
+<content>
+    <div class="container mt-4">
+        <!-- PDF Viewer -->
+        <div class="mb-3">
+            <iframe id="pdfViewer" style="width: 100%; height: 800px;border: none;" title="PDF Document"></iframe>
+        </div>
+    </div>
+</content>
+
+@section Scripts {
+    <script type="module" src="@Url.Content("~/js/viewpdf/contact/index.js")" asp-append-version="true"></script>
+
+    <script type="text/javascript">
+        try {
+                // รับข้อมูล PDF จาก ViewBag โดยไม่ให้ Razor encode
+                const base64 = '@Html.Raw(ViewBag.PdfData)';
+
+                // แปลง Base64 เป็น Blob
+                const byteCharacters = atob(base64);
+                const byteNumbers = Array.from(byteCharacters, c => c.charCodeAt(0));
+                const byteArray = new Uint8Array(byteNumbers);
+                const blob = new Blob([byteArray], { type: 'application/pdf' });
+
+                // สร้าง URL สำหรับ PDF
+                const pdfUrl = URL.createObjectURL(blob);
+
+                // โหลด PDF.js viewer พร้อมไฟล์ PDF
+                const viewerUrl = `/lib/pdfjs-5.2.133-dist/web/viewer.html?file=${encodeURIComponent(pdfUrl)}`;
+                document.getElementById('pdfViewer').src = viewerUrl;
+            } catch (error) {
+                console.error('Error decoding PDF:', error);
+                alert('ไม่สามารถแสดงไฟล์ PDF ได้');
+            }
+    </script>
+}
